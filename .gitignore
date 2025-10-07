@@ -1,0 +1,15 @@
+# See https://git-scm.com/docs/gitignore for details on how to use gitignore
+# Common patterns:
+*.pyc
+__pycache__/
+.env
+.DS_Store
+node_modules/
+dist/
+build/
+*.log
+*.sqlite3
+*.db
+.vscode/
+.idea/
+# Add more patterns as needed for your project
