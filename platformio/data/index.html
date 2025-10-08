@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>SpaceEvaders - Endless Runner</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas" width="340" height="580"></canvas>
+        <div id="controls">
+            <button id="left-btn"></button>
+            <button id="shoot-btn"></button>
+            <button id="right-btn"></button>
+        </div>
+        <input type="text" id="nameInput" maxlength="15" placeholder="Enter your name" style="display: none;">
+        
+        <!-- Navigation buttons -->
+        <div id="menu-controls" class="navigation-controls" style="display: none;">
+            <button id="highscores-btn">Highscores</button>
+        </div>
+        <div id="highscore-controls" class="navigation-controls" style="display: none;">
+            <button id="back-btn">Back</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

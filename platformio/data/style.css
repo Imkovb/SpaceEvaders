@@ -1,0 +1,277 @@
+:root {
+    /* Game Control Button Colors */
+    --left-button-default: #333;
+    --left-button-active: #343230;
+    --right-button-default: #333;
+    --right-button-active: #555;
+    --shoot-button-default: #800;
+    --shoot-button-active: #a00;
+    --shoot-button-disabled: #666;
+    
+    /* Navigation Button Colors */
+    --highscores-button-default: #2196F3;
+    --highscores-button-hover: #1976D2;
+    --back-button-default: #f44336;
+    --back-button-hover: #d32f2f;
+    
+    /* Common Button Properties */
+    --button-text-color: #fff;
+    --button-disabled-opacity: 0.5;
+    --button-disabled-cursor: not-allowed;
+    --button-enabled-cursor: pointer;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #070707;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+}
+
+#game-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#gameCanvas {
+    border: 2px solid #343230;
+    background-color: #1b2026;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+}
+
+#controls {
+    display: flex;
+    justify-content: space-between;
+    width: 340px; /* Match game canvas width */
+    margin-top: 10px;
+    gap: 2px; /* Smaller gap between buttons */
+}
+
+#left-btn, #right-btn, #shoot-btn {
+    width: 112px; /* 340px / 3 ≈ 113.33, minus gap */
+    height: 60px; /* Reduced height for better proportion */
+    font-size: 20px; /* Slightly smaller font */
+    background-color: var(--left-button-default);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: var(--button-text-color);
+    border: 2px solid #343230;
+    border-radius: 0px;
+    cursor: var(--button-enabled-cursor);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+#left-btn {
+    width: 112px; /* 340px / 3 ≈ 113.33, minus gap */
+    height: 60px; /* Reduced height for better proportion */
+    font-size: 0px; /* Hide text */
+    background-color: var(--left-button-default);
+    background-image: url('img/left.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: var(--button-text-color);
+    border: 2px solid #343230;
+    border-radius: 0px;
+    cursor: var(--button-enabled-cursor);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+#right-btn {
+    width: 112px; /* 340px / 3 ≈ 113.33, minus gap */
+    height: 60px; /* Reduced height for better proportion */
+    font-size: 0px; /* Hide text */
+    background-color: var(--right-button-default);
+    background-image: url('img/right.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: var(--button-text-color);
+    border: 2px solid #343230;
+    border-radius: 0px;
+    cursor: var(--button-enabled-cursor);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+#shoot-btn {
+    background-color: var(--shoot-button-default);
+    background-image: url('img/gun.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    font-size: 0px; /* Hide text */
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+#shoot-btn:disabled {
+    background-color: var(--shoot-button-disabled) !important;
+    background-image: url('img/gun.png') !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    opacity: var(--button-disabled-opacity) !important;
+    cursor: var(--button-disabled-cursor) !important;
+}
+
+#left-btn:active {
+    background-color: var(--left-button-active);
+    background-image: url('img/left.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#right-btn:active {
+    background-color: var(--right-button-active);
+    background-image: url('img/right.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#shoot-btn:active {
+    background-color: var(--shoot-button-active);
+    background-image: url('img/gun.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#nameInput {
+    position: absolute;
+    top: 320px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 40px;
+    font-size: 16px;
+    text-align: center;
+    background-color: rgba(34, 34, 34, 0.9);
+    color: #fff;
+    border: 2px solid #fff;
+    border-radius: 4px;
+    outline: none;
+    z-index: 10;
+}
+
+/* Navigation buttons */
+.navigation-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.navigation-controls button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: var(--highscores-button-default);
+    color: var(--button-text-color);
+    border: none;
+    border-radius: 5px;
+    cursor: var(--button-enabled-cursor);
+    transition: background-color 0.3s;
+}
+
+.navigation-controls button:hover {
+    background-color: var(--highscores-button-hover);
+}
+
+#back-btn {
+    background-color: var(--back-button-default);
+}
+
+#back-btn:hover {
+    background-color: var(--back-button-hover);
+}
+
+/* Hide controls on desktop (but show on tablets) */
+@media (min-width: 1024px) {
+    #controls {
+        display: none;
+    }
+}
+
+/* Tablet-specific button styling */
+@media (min-width: 768px) and (max-width: 1023px) {
+    #controls {
+        display: flex;
+        justify-content: space-between;
+        width: 400px;
+        margin-top: 10px;
+        gap: 10px; /* More space for tablet fingers */
+    }
+
+    #left-btn, #right-btn, #shoot-btn {
+        width: 125px; /* Slightly smaller for tablet */
+        height: 90px; /* Taller for tablet */
+        font-size: 32px;
+        border: 2px solid #fff;
+        border-radius: 0px;
+        touch-action: manipulation; /* Prevent double-tap zoom */
+        user-select: none; /* Prevent text selection */
+        -webkit-user-select: none; /* Safari */
+        -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
+    }
+    
+    #shoot-btn {
+        font-size: 36px;
+    }
+}
+
+/* Mobile-specific button styling */
+@media (max-width: 767px) {
+    body {
+        align-items: flex-start; /* Align to top on mobile */
+        padding-top: 20px; /* Add some padding from top */
+    }
+    
+    #left-btn, #right-btn, #shoot-btn {
+        width: 130px;
+        height: 65px; /* Reduced height from 80px to 65px */
+        font-size: 28px;
+        border: 2px solid #fff;
+        border-radius: 0px;
+        touch-action: manipulation; /* Prevent double-tap zoom */
+        user-select: none; /* Prevent text selection */
+        -webkit-user-select: none; /* Safari */
+        -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
+    }
+    
+    #shoot-btn {
+        font-size: 32px;
+    }
+    
+    #controls {
+        gap: 5px;
+        margin-top: 5px; /* Reduced top margin for mobile */
+    }
+}

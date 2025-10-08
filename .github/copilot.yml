@@ -1,0 +1,24 @@
+# Repository-level Copilot guidance. This file is intended to document desired Copilot behavior for the repository.
+# NOTE: GitHub's Copilot-specific repo config keys may evolve. This file is intentionally descriptive and provides suggested allow/exclude paths.
+# If your organization uses a managed Copilot policy, update this file to match the official schema.
+
+enabled: true
+
+n# Files or directories where Copilot suggestions should be treated as sensitive/no-suggestions.
+# These paths are informational here — adapt to your organization's official copilot config format if needed.
+exclude:
+  - "platformio/data/**"
+  - "platformio/**/data/**"
+  - "platformio/**/build/**"
+  - "www/img/**"
+  - "platformio/.pio/**"
+
+n# Preferred file types for Copilot suggestions (informational)
+allow:
+  - "**/*.py"
+  - "src/**"
+  - "www/**"
+  - "platformio/**/src/**"
+
+n# Project policy: when accepting Copilot suggestions that add non-trivial code (>= 10 LOC or new dependency), add a brief note in the commit message describing the change and the prompt used.
+# See .github/COPILOT.md for full rules and prompt templates.

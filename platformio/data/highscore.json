@@ -1,0 +1,1516 @@
+{
+  "highscores": [
+    {
+      "name": "Imko",
+      "score": 11275,
+      "date": "2025-09-28T17:47:37.621Z",
+      "playerFingerprint": "71836977"
+    },
+    {
+      "name": "Cas",
+      "score": 10214,
+      "date": "2025-09-28T09:57:41.340Z",
+      "playerFingerprint": "4c4194fa"
+    },
+    {
+      "name": "Noob",
+      "score": 9925,
+      "date": "2025-09-28T13:20:41.983Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Imko",
+      "score": 9404,
+      "date": "2025-09-28T09:55:23.784Z",
+      "playerFingerprint": "5ed2e4a1"
+    },
+    {
+      "name": "Cas",
+      "score": 8949,
+      "date": "2025-09-28T09:47:53.579Z",
+      "playerFingerprint": "4c4194fa"
+    },
+    {
+      "name": "Imko",
+      "score": 8912,
+      "date": "2025-09-28T09:40:37.899Z",
+      "playerFingerprint": "5ed2e4a1"
+    },
+    {
+      "name": "Jens",
+      "score": 8797,
+      "date": "2025-09-28T09:48:51.381Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Cas",
+      "score": 8688,
+      "date": "2025-09-28T09:44:16.609Z",
+      "playerFingerprint": "4c4194fa"
+    },
+    {
+      "name": "Iris",
+      "score": 8515,
+      "date": "2025-09-28T09:50:15.329Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Imko",
+      "score": 8280,
+      "date": "2025-09-28T09:46:07.084Z",
+      "playerFingerprint": "5ed2e4a1"
+    },
+    {
+      "name": "Iris",
+      "score": 8265,
+      "date": "2025-09-28T10:04:49.192Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 7873,
+      "date": "2025-09-28T10:11:49.331Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 7824,
+      "date": "2025-09-28T17:39:14.126Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 7678,
+      "date": "2025-09-28T10:03:20.063Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Noob",
+      "score": 7600,
+      "date": "2025-09-28T13:19:10.730Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 7464,
+      "date": "2025-09-28T10:11:44.847Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 7412,
+      "date": "2025-09-28T09:54:12.507Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 7371,
+      "date": "2025-09-28T09:42:52.536Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 7176,
+      "date": "2025-09-28T09:41:24.496Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 7112,
+      "date": "2025-09-28T09:44:45.662Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Cas",
+      "score": 7081,
+      "date": "2025-09-28T09:40:53.281Z",
+      "playerFingerprint": "4c4194fa"
+    },
+    {
+      "name": "Noob",
+      "score": 7077,
+      "date": "2025-09-28T13:19:49.904Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Cas",
+      "score": 6931,
+      "date": "2025-09-28T09:38:49.008Z",
+      "playerFingerprint": "4c4194fa"
+    },
+    {
+      "name": "Iris",
+      "score": 6930,
+      "date": "2025-09-28T17:42:38.685Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 6751,
+      "date": "2025-09-28T10:10:49.277Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Hoi",
+      "score": 6659,
+      "date": "2025-09-28T13:22:00.227Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Bob",
+      "score": 6642,
+      "date": "2025-09-28T12:54:05.337Z",
+      "playerFingerprint": "4c4194fa"
+    },
+    {
+      "name": "Iris",
+      "score": 6618,
+      "date": "2025-09-28T09:53:25.018Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Jens",
+      "score": 6616,
+      "date": "2025-09-28T09:42:32.207Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Irjsn",
+      "score": 6586,
+      "date": "2025-09-28T10:09:53.183Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Cas",
+      "score": 6513,
+      "date": "2025-09-28T09:42:52.714Z",
+      "playerFingerprint": "4c4194fa"
+    },
+    {
+      "name": "Iris",
+      "score": 6507,
+      "date": "2025-09-28T10:06:51.151Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Noob",
+      "score": 6441,
+      "date": "2025-09-28T13:15:40.068Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 6304,
+      "date": "2025-09-28T13:22:51.299Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 6223,
+      "date": "2025-09-28T10:10:27.073Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Idis",
+      "score": 6188,
+      "date": "2025-09-28T10:09:04.933Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Jens",
+      "score": 6139,
+      "date": "2025-09-28T09:39:36.091Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Noob",
+      "score": 6103,
+      "date": "2025-09-28T12:58:50.544Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 6093,
+      "date": "2025-09-28T09:37:21.505Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Cas",
+      "score": 6053,
+      "date": "2025-09-28T12:45:13.949Z",
+      "playerFingerprint": "4c4194fa"
+    },
+    {
+      "name": "Cas",
+      "score": 6038,
+      "date": "2025-09-28T09:37:39.488Z",
+      "playerFingerprint": "4c4194fa"
+    },
+    {
+      "name": "Jens",
+      "score": 6006,
+      "date": "2025-09-28T09:44:44.064Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 5845,
+      "date": "2025-09-28T10:05:06.876Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 5843,
+      "date": "2025-09-28T12:10:48.378Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Mama",
+      "score": 5830,
+      "date": "2025-09-28T10:08:54.128Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Anonymous",
+      "score": 5681,
+      "date": "2025-09-28T09:57:22.775Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 5618,
+      "date": "2025-09-28T09:39:39.271Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Jens",
+      "score": 5588,
+      "date": "2025-09-28T13:14:53.645Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Cas",
+      "score": 5584,
+      "date": "2025-09-28T09:45:37.872Z",
+      "playerFingerprint": "4c4194fa"
+    },
+    {
+      "name": "Imko",
+      "score": 5581,
+      "date": "2025-09-28T08:23:51.203Z",
+      "playerFingerprint": "564f14ba"
+    },
+    {
+      "name": "Noob",
+      "score": 5556,
+      "date": "2025-09-28T12:54:00.478Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Anonymous",
+      "score": 5486,
+      "date": "2025-09-28T12:55:24.702Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 5475,
+      "date": "2025-09-28T10:05:45.583Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Noob",
+      "score": 5422,
+      "date": "2025-09-28T13:16:20.710Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Noob",
+      "score": 5409,
+      "date": "2025-09-28T13:12:27.005Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Ira",
+      "score": 5360,
+      "date": "2025-09-28T10:13:15.251Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 5283,
+      "date": "2025-09-28T09:38:01.588Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 5211,
+      "date": "2025-09-28T10:08:02.992Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Noob",
+      "score": 5180,
+      "date": "2025-09-28T13:21:13.826Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 5179,
+      "date": "2025-09-28T09:48:31.872Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 5117,
+      "date": "2025-09-28T09:49:09.459Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Hoi",
+      "score": 5080,
+      "date": "2025-09-28T09:54:54.890Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Imko",
+      "score": 5059,
+      "date": "2025-09-28T09:21:05.804Z",
+      "playerFingerprint": "5ed2e4a1"
+    },
+    {
+      "name": "Jens",
+      "score": 5033,
+      "date": "2025-09-28T09:46:17.617Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Anonymous",
+      "score": 5032,
+      "date": "2025-09-28T10:09:46.795Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 4979,
+      "date": "2025-09-28T09:37:38.237Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 4951,
+      "date": "2025-09-28T10:06:10.223Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 4932,
+      "date": "2025-09-28T09:44:01.438Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 4805,
+      "date": "2025-09-27T13:09:01.919Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Jens",
+      "score": 4706,
+      "date": "2025-09-28T09:47:08.911Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Anonymous",
+      "score": 4672,
+      "date": "2025-09-28T13:17:10.953Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Imko",
+      "score": 4670,
+      "date": "2025-09-28T15:05:09.438Z",
+      "playerFingerprint": "4feb08bc"
+    },
+    {
+      "name": "Hoi",
+      "score": 4640,
+      "date": "2025-09-28T09:55:34.138Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 4601,
+      "date": "2025-09-28T09:56:42.322Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 4582,
+      "date": "2025-09-28T10:08:07.935Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Cas",
+      "score": 4543,
+      "date": "2025-09-28T09:39:37.940Z",
+      "playerFingerprint": "4c4194fa"
+    },
+    {
+      "name": "Noob",
+      "score": 4539,
+      "date": "2025-09-28T12:55:56.747Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Noob",
+      "score": 4503,
+      "date": "2025-09-28T12:56:39.075Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "I",
+      "score": 4408,
+      "date": "2025-09-28T09:40:10.556Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 4364,
+      "date": "2025-09-28T17:39:49.010Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Anonymous",
+      "score": 4321,
+      "date": "2025-09-28T12:45:52.031Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 4263,
+      "date": "2025-09-28T09:40:13.522Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 4260,
+      "date": "2025-09-28T09:45:38.448Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 4181,
+      "date": "2025-09-28T09:47:09.895Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 4177,
+      "date": "2025-09-28T17:38:18.842Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Hoi",
+      "score": 4172,
+      "date": "2025-09-28T10:01:08.782Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Noob",
+      "score": 4160,
+      "date": "2025-09-28T13:13:44.250Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 4149,
+      "date": "2025-09-28T09:38:42.621Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 4131,
+      "date": "2025-09-27T13:06:52.250Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 4124,
+      "date": "2025-09-28T09:51:56.015Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Hoi",
+      "score": 4099,
+      "date": "2025-09-28T10:01:56.306Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 4068,
+      "date": "2025-09-28T12:48:11.744Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 4063,
+      "date": "2025-09-28T10:12:27.783Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Anonymous",
+      "score": 3972,
+      "date": "2025-09-28T10:07:34.117Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 3899,
+      "date": "2025-09-28T09:38:14.483Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 3844,
+      "date": "2025-09-28T09:36:52.667Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Mama",
+      "score": 3668,
+      "date": "2025-09-28T09:50:43.173Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 3575,
+      "date": "2025-09-27T13:05:56.572Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Hoi",
+      "score": 3575,
+      "date": "2025-09-28T09:59:30.009Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 3553,
+      "date": "2025-09-28T10:02:32.316Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 3541,
+      "date": "2025-09-28T09:43:03.541Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 3539,
+      "date": "2025-09-28T09:53:06.232Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 3539,
+      "date": "2025-09-28T10:07:21.261Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 3528,
+      "date": "2025-09-27T13:09:56.502Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 3521,
+      "date": "2025-09-28T09:46:14.079Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Hoi",
+      "score": 3521,
+      "date": "2025-09-28T12:49:11.278Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 3517,
+      "date": "2025-09-28T10:03:58.425Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Jens",
+      "score": 3475,
+      "date": "2025-09-28T09:41:23.382Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jenshoi",
+      "score": 3439,
+      "date": "2025-09-28T09:56:08.892Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 3425,
+      "date": "2025-09-28T12:49:43.544Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jenshoi",
+      "score": 3240,
+      "date": "2025-09-28T10:04:13.559Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 3179,
+      "date": "2025-09-28T12:44:42.205Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Noob",
+      "score": 3166,
+      "date": "2025-09-28T12:54:27.293Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 3129,
+      "date": "2025-09-28T10:12:12.306Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 3124,
+      "date": "2025-09-28T09:47:30.276Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 3088,
+      "date": "2025-09-28T09:45:15.734Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Ieis",
+      "score": 3066,
+      "date": "2025-09-28T09:51:22.697Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Hoi",
+      "score": 3058,
+      "date": "2025-09-28T09:58:33.593Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Noob",
+      "score": 3047,
+      "date": "2025-09-28T12:54:51.887Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 3035,
+      "date": "2025-09-28T09:50:41.903Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Ieix",
+      "score": 3035,
+      "date": "2025-09-28T09:52:40.867Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Jens",
+      "score": 3021,
+      "date": "2025-09-28T09:46:39.116Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 3005,
+      "date": "2025-09-28T12:44:15.172Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Noob",
+      "score": 3003,
+      "date": "2025-09-28T12:57:04.042Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 3001,
+      "date": "2025-09-28T10:00:20.578Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 2994,
+      "date": "2025-09-28T10:06:09.834Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Hoi",
+      "score": 2974,
+      "date": "2025-09-28T09:52:14.183Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 2970,
+      "date": "2025-09-28T09:36:19.365Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Noob",
+      "score": 2935,
+      "date": "2025-09-28T12:58:13.093Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Cas",
+      "score": 2674,
+      "date": "2025-09-28T09:46:36.291Z",
+      "playerFingerprint": "4c4194fa"
+    },
+    {
+      "name": "Iris",
+      "score": 2616,
+      "date": "2025-09-28T09:39:07.276Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Hoi",
+      "score": 2570,
+      "date": "2025-09-28T12:46:14.003Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 2507,
+      "date": "2025-09-28T12:45:23.089Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 2506,
+      "date": "2025-09-28T09:45:07.241Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 2477,
+      "date": "2025-09-28T09:59:53.421Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 2457,
+      "date": "2025-09-28T12:47:31.291Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 2456,
+      "date": "2025-09-28T09:36:12.666Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 2421,
+      "date": "2025-09-28T10:09:16.219Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 2397,
+      "date": "2025-09-28T09:46:32.065Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Jens",
+      "score": 2393,
+      "date": "2025-09-28T13:18:27.193Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 2363,
+      "date": "2025-09-28T09:36:38.299Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Hoi",
+      "score": 2361,
+      "date": "2025-09-28T10:07:01.296Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 2356,
+      "date": "2025-09-28T10:06:41.937Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 2222,
+      "date": "2025-09-28T09:49:11.385Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 2208,
+      "date": "2025-09-28T10:10:44.541Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 2116,
+      "date": "2025-09-28T09:49:26.364Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Imko",
+      "score": 2095,
+      "date": "2025-09-27T10:32:23.071Z",
+      "playerFingerprint": "4feb08bc"
+    },
+    {
+      "name": "Iris",
+      "score": 2032,
+      "date": "2025-09-28T09:43:29.739Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 1964,
+      "date": "2025-09-28T09:43:48.881Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 1959,
+      "date": "2025-09-27T13:10:21.497Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Jens",
+      "score": 1926,
+      "date": "2025-09-28T12:43:54.440Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Anonymous",
+      "score": 1920,
+      "date": "2025-09-28T12:47:01.137Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Anonymous",
+      "score": 1916,
+      "date": "2025-09-28T12:45:45.941Z",
+      "playerFingerprint": "4c4194fa"
+    },
+    {
+      "name": "imko",
+      "score": 1885,
+      "date": "2025-09-27T09:54:51.839Z",
+      "playerFingerprint": "4feb08bc"
+    },
+    {
+      "name": "Iris",
+      "score": 1857,
+      "date": "2025-09-28T09:40:23.548Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Mama",
+      "score": 1807,
+      "date": "2025-09-28T10:12:44.433Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Irs",
+      "score": 1801,
+      "date": "2025-09-28T09:50:54.820Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Jens",
+      "score": 1788,
+      "date": "2025-09-28T09:52:37.574Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 1768,
+      "date": "2025-09-28T12:48:25.471Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Mama",
+      "score": 1766,
+      "date": "2025-09-28T13:14:06.046Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 1764,
+      "date": "2025-09-28T10:05:26.579Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 1718,
+      "date": "2025-09-28T09:45:43.429Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Noob",
+      "score": 1677,
+      "date": "2025-09-28T13:15:50.474Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 1513,
+      "date": "2025-09-28T09:40:29.742Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 1443,
+      "date": "2025-09-28T09:43:30.696Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 1409,
+      "date": "2025-09-28T09:55:07.695Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 1405,
+      "date": "2025-09-28T09:41:59.436Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Imko",
+      "score": 1384,
+      "date": "2025-09-26T12:55:08.191Z",
+      "playerFingerprint": "56fb6bd3"
+    },
+    {
+      "name": "Anonymous",
+      "score": 1352,
+      "date": "2025-09-28T10:12:25.678Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Ut7rur",
+      "score": 1349,
+      "date": "2025-09-28T10:11:02.415Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Hoi",
+      "score": 1341,
+      "date": "2025-09-28T09:53:20.491Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Anonymous",
+      "score": 1330,
+      "date": "2025-09-28T12:51:37.923Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Cas",
+      "score": 1326,
+      "date": "2025-09-28T09:36:44.700Z",
+      "playerFingerprint": "4c4194fa"
+    },
+    {
+      "name": "Jens",
+      "score": 1317,
+      "date": "2025-09-28T09:38:51.257Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 1316,
+      "date": "2025-09-28T09:38:16.325Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Jenshoi",
+      "score": 1298,
+      "date": "2025-09-28T13:14:21.614Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 1273,
+      "date": "2025-09-28T09:43:10.219Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Jens",
+      "score": 1251,
+      "date": "2025-09-28T09:38:38.968Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 1251,
+      "date": "2025-09-28T09:58:51.736Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 1239,
+      "date": "2025-09-28T09:52:08.057Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Jens",
+      "score": 1232,
+      "date": "2025-09-28T09:38:26.060Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Anonymous",
+      "score": 1230,
+      "date": "2025-09-28T12:52:05.229Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 1217,
+      "date": "2025-09-28T10:06:21.454Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "123456789",
+      "score": 1202,
+      "date": "2025-09-28T10:00:38.720Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 1201,
+      "date": "2025-09-28T12:48:43.232Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 1198,
+      "date": "2025-09-28T13:07:55.765Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Anonymous",
+      "score": 1183,
+      "date": "2025-09-28T12:46:36.290Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 1173,
+      "date": "2025-09-28T12:53:12.039Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 1172,
+      "date": "2025-09-28T09:41:46.936Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 1170,
+      "date": "2025-09-28T10:02:27.489Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Anonymous",
+      "score": 1166,
+      "date": "2025-09-28T13:17:32.314Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Anonymous",
+      "score": 1157,
+      "date": "2025-09-28T12:47:09.989Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 1155,
+      "date": "2025-09-28T12:53:01.999Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Anonymous",
+      "score": 1143,
+      "date": "2025-09-28T09:45:25.227Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Cas",
+      "score": 1139,
+      "date": "2025-09-28T09:41:48.490Z",
+      "playerFingerprint": "4c4194fa"
+    },
+    {
+      "name": "Jens",
+      "score": 1137,
+      "date": "2025-09-28T09:36:27.879Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Imko",
+      "score": 1115,
+      "date": "2025-09-26T11:39:07.026Z",
+      "playerFingerprint": "56fb6bd3"
+    },
+    {
+      "name": "Hoi",
+      "score": 1110,
+      "date": "2025-09-28T10:02:08.703Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 1097,
+      "date": "2025-09-28T09:47:33.838Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 1085,
+      "date": "2025-09-28T09:44:55.741Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Hoi",
+      "score": 1064,
+      "date": "2025-09-28T12:46:27.075Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "imko",
+      "score": 1056,
+      "date": "2025-09-27T09:55:07.791Z",
+      "playerFingerprint": "4feb08bc"
+    },
+    {
+      "name": "Jens",
+      "score": 994,
+      "date": "2025-09-28T13:15:02.996Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 973,
+      "date": "2025-09-28T09:52:25.893Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 963,
+      "date": "2025-09-28T10:02:36.833Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Jens",
+      "score": 938,
+      "date": "2025-09-28T09:37:06.909Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Hoi",
+      "score": 897,
+      "date": "2025-09-28T12:11:12.838Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 867,
+      "date": "2025-09-28T12:51:46.998Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Mama",
+      "score": 862,
+      "date": "2025-09-28T12:59:08.895Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Mama",
+      "score": 843,
+      "date": "2025-09-28T13:07:01.676Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Anonymous",
+      "score": 789,
+      "date": "2025-09-28T13:08:21.536Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "I",
+      "score": 727,
+      "date": "2025-09-28T10:05:02.761Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 682,
+      "date": "2025-09-27T13:09:16.032Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 673,
+      "date": "2025-09-28T10:02:15.650Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 672,
+      "date": "2025-09-27T15:35:28.519Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 642,
+      "date": "2025-09-28T09:41:36.109Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Noob2",
+      "score": 599,
+      "date": "2025-09-28T13:17:21.490Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Ira",
+      "score": 564,
+      "date": "2025-09-28T10:08:19.642Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Hoi",
+      "score": 545,
+      "date": "2025-09-28T12:47:40.889Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Mama",
+      "score": 534,
+      "date": "2025-09-28T12:59:52.378Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Irs",
+      "score": 474,
+      "date": "2025-09-28T10:03:33.227Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Noob",
+      "score": 462,
+      "date": "2025-09-28T13:08:05.313Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 428,
+      "date": "2025-09-28T10:08:10.098Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Jens",
+      "score": 355,
+      "date": "2025-09-28T12:50:03.799Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 326,
+      "date": "2025-09-28T13:12:51.983Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Anonymous",
+      "score": 312,
+      "date": "2025-09-28T10:03:40.887Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 306,
+      "date": "2025-09-28T13:13:11.472Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 301,
+      "date": "2025-09-28T17:40:39.780Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Noob",
+      "score": 292,
+      "date": "2025-09-28T13:00:22.220Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 292,
+      "date": "2025-09-28T17:39:55.370Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "I",
+      "score": 291,
+      "date": "2025-09-28T17:41:29.635Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "I",
+      "score": 284,
+      "date": "2025-09-28T17:41:41.839Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Hoi",
+      "score": 282,
+      "date": "2025-09-28T10:03:47.290Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 279,
+      "date": "2025-09-28T10:13:36.804Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 277,
+      "date": "2025-09-28T13:13:04.753Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 276,
+      "date": "2025-09-28T09:50:54.192Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "I",
+      "score": 273,
+      "date": "2025-09-28T17:41:47.307Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Cas",
+      "score": 269,
+      "date": "2025-09-28T09:55:03.926Z",
+      "playerFingerprint": "4c4194fa"
+    },
+    {
+      "name": "Anonymous",
+      "score": 269,
+      "date": "2025-09-28T12:47:45.730Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 267,
+      "date": "2025-09-28T10:13:31.649Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Mama",
+      "score": 266,
+      "date": "2025-09-28T12:48:32.048Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 265,
+      "date": "2025-09-28T09:47:36.602Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Jens",
+      "score": 264,
+      "date": "2025-09-28T13:12:58.539Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 264,
+      "date": "2025-09-28T17:40:18.887Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "I",
+      "score": 260,
+      "date": "2025-09-28T17:41:52.605Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "I",
+      "score": 259,
+      "date": "2025-09-28T09:47:17.585Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Jens",
+      "score": 257,
+      "date": "2025-09-28T10:13:05.525Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "I",
+      "score": 257,
+      "date": "2025-09-28T17:41:36.030Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Iris",
+      "score": 255,
+      "date": "2025-09-28T17:41:05.845Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Mama",
+      "score": 251,
+      "date": "2025-09-28T13:00:06.271Z",
+      "playerFingerprint": "7d69f7ec"
+    },
+    {
+      "name": "Iris",
+      "score": 247,
+      "date": "2025-09-28T17:40:49.011Z",
+      "playerFingerprint": "4f4893f8"
+    },
+    {
+      "name": "Hoi",
+      "score": 246,
+      "date": "2025-09-28T12:46:42.068Z",
+      "playerFingerprint": "7d69f7ec"
+    }
+  ]
+}
