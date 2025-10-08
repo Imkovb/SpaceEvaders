@@ -1,117 +1,8 @@
-// Game Configuration Constants
-const CONFIG = {
-    // Player Rotation Settings
-    PLAYER_ROTATE_MAX_ANGLE: Math.PI / 8, // max rotation in radians (~22.5deg)
-    PLAYER_ROTATE_EASE_SPEED: 0.1, // easing factor (0-1, higher is snappier)
-    PLAYER_ROTATE_RETURN_DISTANCE: 8, // distance multiplier for when to start returning to straight (higher = earlier return)
-    
-    // Speed Settings
-    PLAYER_SPEED: 8,
-    OBSTACLE_SPEED: 2,
-    BULLET_SPEED: 10,
-    GAME_SPEED_INCREASE: 0.0005,
-    
-    // Score Settings
-    SCORE_PER_FRAME: 1,
-    SCORE_PER_ENEMY_DESTROYED: 500,
-    ENEMIES_FOR_BULLET: 5,
-    
-    // Size Settings
-    CANVAS_WIDTH: 340,
-    CANVAS_HEIGHT: 580,
-    PLAYER_WIDTH: 32,
-    PLAYER_HEIGHT: 32,
-    OBSTACLE_WIDTH: 48,
-    OBSTACLE_HEIGHT: 48,
-    BULLET_WIDTH: 4,
-    BULLET_HEIGHT: 12,
-    
-    // Game Settings
-    LANES: 3,
-    OBSTACLE_SPAWN_RATE: 0.02,
-    
-    // UI Settings
-    BULLET_COUNTER_X_OFFSET: 10,
-    BULLET_COUNTER_Y_OFFSET: 30,
-    SCORE_COUNTER_X_OFFSET: 10,
-    SCORE_COUNTER_Y_OFFSET: 30,
-    CHALLENGE_MODE_X_OFFSET: 250, // X position for challenge mode text (right side)
-    CHALLENGE_MODE_Y_OFFSET: 30, // Y position for challenge mode text
-    BULLET_BAR_WIDTH: 80, // Width of bullet progress bar (shorter than before)
-    
-    // Sprite Settings
-    ENEMY_SCALE: 3.5,
-    BOSS_SCALE: 16.0,
-    
-    // Special Enemy V Formation Settings
-    SPECIAL_ENEMY_SCALE: 2.2, // Smaller than regular enemies (1.5x vs 3x)
-    SPECIAL_ENEMY_V_SPACING: 25, // Vertical spacing between V formation enemies
-    SPECIAL_ENEMY_H_SPACING: 25, // Horizontal spacing for V formation wings
-    SPECIAL_ENEMY_SPAWN_CHANCE: 0.3, // 30% chance to spawn special formation per wave
-    
-    // Dynamic Spacing Settings
-    BASE_SPACING: 150, // Increased from 100 to 150 - starting spacing between obstacles
-    MIN_SPACING: 40, // Increased from 20 to 40 - minimum spacing
-    SPACING_DECREASE_RATE: 0.1, // How fast spacing decreases
-    
-    // Intelligent Spawning Settings
-    MIN_TIME_BETWEEN_SPAWNS: 15, // Minimum frames between spawns
-    PLAYER_LANE_CROWD_REDUCTION: 0.5, // Spawn reduction when player lane crowded
-    EMPTY_LANE_BONUS: 1.6, // Spawn bonus when player lane empty
-    BULLET_SPAWN_BONUS: 1.6, // Spawn bonus when player has bullet (increased spawning)
-    RECENT_SPAWN_REDUCTION: 0.3, // Heavy reduction if spawned recently
-    
-    // Boss Settings
-    BOSS_WIDTH: 200, // Adjusted for 340px canvas (2 lanes of ~113px each)
-    BOSS_HEIGHT: 200, // Taller than regular obstacles
-    BOSS_SPAWN_CHANCE: 0.005, // Very low chance (0.5%)
-    BOSS_SPEED: 0.99, // Slightly slower to compensate for larger size appearing faster
-    BOSS_COLOR: '#FF0000', // Red color for boss
-    
-    // Boss Hurtbox Settings
-    BOSS_HURTBOX_HEIGHT: 100, // Height of the hurtbox beneath the boss (2 enemies high)
-    BOSS_HURTBOX_WIDTH: 200, // Width matches boss width
-    BOSS_HURTBOX_OFFSET: 0, // Offset from boss bottom (0 = directly beneath)
-    
-    // Highscore Challenge Settings
-    HIGHSCORE_CHALLENGE_THRESHOLD: 0.85, // Percentage of personal best to trigger challenge mode (0.9 = 90%)
-    HIGHSCORE_CHALLENGE_MULTIPLIER: 12.0, // Difficulty multiplier when challenging highscore
-    HIGHSCORE_CHALLENGE_SPAWN_MULTIPLIER: 20.0, // Spawn rate multiplier when challenging highscore
-    
-    // Explosion Settings
-    EXPLOSION_FRAME_DURATION_MS: 67, // Duration of each explosion frame in milliseconds (67ms = ~15 FPS)
-    EXPLOSION_SCALE: 1.5, // Scale factor for explosion size (3.0 = same as enemies)
-    
-    // Logo Settings
-    LOGO_SCALE: 3.0, // Scale factor for logo size (2.0 = 2x original size)
-    LOGO_POSITION_FROM_TOP: 50, // Distance from top of canvas in pixels
-    
-    // Button Color Settings
-    BUTTON_COLORS: {
-        // Game Control Buttons
-        LEFT_BUTTON_DEFAULT: '#343230',
-        LEFT_BUTTON_ACTIVE: '#343230',
-        RIGHT_BUTTON_DEFAULT: '#343230', 
-        RIGHT_BUTTON_ACTIVE: '#343230',
-        SHOOT_BUTTON_DEFAULT: 'rgba(149, 57, 44, 1)',
-        SHOOT_BUTTON_ACTIVE: '#a00',
-        SHOOT_BUTTON_DISABLED: '#1b2026',
-        
-        // Navigation Buttons
-        HIGHSCORES_BUTTON_DEFAULT: '#0d4776ff',
-        HIGHSCORES_BUTTON_HOVER: '#1976D2',
-        BACK_BUTTON_DEFAULT: '#f44336',
-        BACK_BUTTON_HOVER: '#d32f2f',
-        
-        // Common Button Properties
-        BUTTON_TEXT_COLOR: '#fff',
-        BUTTON_DISABLED_OPACITY: '0.5',
-        BUTTON_DISABLED_CURSOR: 'not-allowed',
-        BUTTON_ENABLED_CURSOR: 'pointer'
-    },
-};
+import { CONFIG, ENEMY_SCALE, ENEMIES_FOR_BULLET } from './js/config.js';
+import * as Collision from './js/collision.js';
+import { enemySprites, shipSprite, logoSprite, explosionFrames, spritesLoaded, loadSprites } from './js/sprites.js';
 
-// Game constants
+// Game constants derived from CONFIG
 const CANVAS_WIDTH = CONFIG.CANVAS_WIDTH;
 const CANVAS_HEIGHT = CONFIG.CANVAS_HEIGHT;
 const PLAYER_WIDTH = CONFIG.PLAYER_WIDTH;
@@ -125,108 +16,119 @@ const LANE_WIDTH = CANVAS_WIDTH / LANES;
 const BULLET_WIDTH = CONFIG.BULLET_WIDTH;
 const BULLET_HEIGHT = CONFIG.BULLET_HEIGHT;
 const BULLET_SPEED = CONFIG.BULLET_SPEED;
-const ENEMY_SCALE = CONFIG.ENEMY_SCALE;
-const ENEMIES_FOR_BULLET = CONFIG.ENEMIES_FOR_BULLET;
-
-// Game variables
-let canvas, ctx;
-let gameState = 'menu'; // menu, playing, gameOver
-let player = { 
-    x: CANVAS_WIDTH / 2 - PLAYER_WIDTH / 2, 
-    y: CANVAS_HEIGHT - 100, 
-    vx: 0, 
-    vy: 0,
-    currentLane: 1, // 0, 1, 2 (left, center, right)
-    targetX: CANVAS_WIDTH / 2 - PLAYER_WIDTH / 2,
-    rotation: 0, // current rotation in radians
-    targetRotation: 0 // target rotation in radians
-};
-let obstacles = [];
-let stars = [];
-let bullet = null;
-let hasBullet = true;
-let enemiesDodged = 0;
-let score = 0;
-let highScore = localStorage.getItem('spaceEvadersHighScore') || 0;
-let keys = {};
-let touchLeft = false, touchRight = false, touchShoot = false;
-let gameSpeed = 1;
-
-// Difficulty scaling for highscore challengers
-let difficultyMultiplier = 1.0;
-let playerPersonalBest = 0;
-let isChallengingHighscore = false;
-
-// Mouse tracking for menu buttons
-let mouseX = 0;
-let mouseY = 0;
-
-// Highscore system
+// DOM / canvas references and UI elements (declared at module scope)
+let canvas = null;
+let ctx = null;
+let shootBtn = null; // assigned in init()
+let nameInputElement = null;
+// Game state variables (declare at module scope to avoid ReferenceError in ES modules)
+let playerFingerprint = null; // device/highscore identifier
+let gameState = 'menu'; // 'menu' | 'playing' | 'gameOver' | 'nameInput' | 'highscoreDisplay'
 let highscores = [];
-let playerName = '';
-let playerPosition = -1;
 let nameInputActive = false;
-let nameInputElement;
-let playerFingerprint = '';
+// Bullet state (module-scope to avoid ReferenceError in ES modules)
+let hasBullet = false; // whether player currently has a bullet available to shoot
+let bullet = null; // active bullet object when shot
+// Back-compat: expose these to window for any legacy code that expects globals
+try {
+    Object.defineProperty(window, 'playerFingerprint', {
+        get() { return playerFingerprint; },
+        set(v) { playerFingerprint = v; },
+        configurable: true
+    });
+    Object.defineProperty(window, 'gameState', {
+        get() { return gameState; },
+        set(v) { gameState = v; },
+        configurable: true
+    });
+    Object.defineProperty(window, 'highscores', {
+        get() { return highscores; },
+        set(v) { highscores = v; },
+        configurable: true
+    });
+    Object.defineProperty(window, 'nameInputActive', {
+        get() { return nameInputActive; },
+        set(v) { nameInputActive = v; },
+        configurable: true
+    });
+    // Expose bullet availability for legacy code
+    Object.defineProperty(window, 'hasBullet', {
+        get() { return hasBullet; },
+        set(v) { hasBullet = v; },
+        configurable: true
+    });
+    Object.defineProperty(window, 'bullet', {
+        get() { return bullet; },
+        set(v) { bullet = v; },
+        configurable: true
+    });
+} catch (e) {
+    // If defining properties fails, fall back to simple assignment
+    window.playerFingerprint = playerFingerprint;
+    window.gameState = gameState;
+    window.highscores = highscores;
+    window.nameInputActive = nameInputActive;
+}
+// Input and world state globals
+let keys = {}; // keyboard state map
+let stars = []; // background stars array
+let mouseX = 0, mouseY = 0; // mouse position over canvas
+// Module-scope game variables (must be declared in ES modules / strict mode)
+let TARGET_FPS = 60; // target frames per second used for timing calculations
+let explosionFrameDuration = 0; // computed in init()
+let explosionFrameCount = 9; // number of explosion frames (fallback)
+let touchLeft = false, touchRight = false, touchShoot = false; // touch/mouse button flags
+let highscoreScrollOffset = 0; // scroll position for highscores display
+let showDebugCollision = false; // toggle for debug collision overlays (defined for safety)
 
-// Highscore scrolling
-let highscoreScrollOffset = 0;
-let maxVisibleScores = 5;
-
-// Sprites
-let enemySprites = [];
-let shipSprite;
-let logoSprite; // Logo image for start screen
-let spritesLoaded = false;
-
-// Wave system
+// Wave / spawning state
 let currentWave = 0;
 let currentWaveEnemyIndex = -1;
+let availableEnemyIndices = [];
 let waveEnemiesSpawned = 0;
-let waveLength = 8; // Number of enemies per wave
-let availableEnemyIndices = []; // Will be shuffled each wave
-let specialFormationSpawnedThisWave = false; // Track if special V formation spawned this wave
+let specialFormationSpawnedThisWave = false;
+let waveLength = 20; // enemies per wave before boss (tunable)
 
-// Intelligent spawning system
+// World state containers
+let obstacles = [];
+let explosions = [];
+let boss = null;
+
+// Timing / scoring
 let lastSpawnTime = 0;
+let lastBossScore = 0;
+let enemiesDodged = 0;
+let score = 0;
+let gameSpeed = 1;
+let difficultyMultiplier = 1.0;
+let isChallengingHighscore = false;
 
-// Boss system
-let boss = null; // Boss enemy
-let lastBossScore = 0; // Track last score milestone when boss spawned
-
-// Explosion system
-let explosions = []; // Array of active explosions
-let explosionFrames = []; // Array to hold individual frames of the explosion GIF
-let explosionFrameCount = 9; // 9 frames in the explosion GIF
-let explosionFrameDuration; // Calculated from CONFIG.EXPLOSION_FRAME_DURATION_MS
-
-// Target frame rate for timing calculations
-const TARGET_FPS = 30;
-
-// Debug settings
-let showDebugCollision = false; // Set to false to hide debug collision
-let showCollisionBoxes = false; // Set to false to hide collision boxes
-
-// Initialize game
-function init() {
+// Player state
+let playerName = '';
+let playerPosition = 0;
+let playerPersonalBest = 0;
+let player = {
+    currentLane: 1,
+    x: (1 * LANE_WIDTH) + (LANE_WIDTH / 2) - (CONFIG.PLAYER_WIDTH / 2),
+    y: CONFIG.CANVAS_HEIGHT - 100,
+    targetX: (1 * LANE_WIDTH) + (LANE_WIDTH / 2) - (CONFIG.PLAYER_WIDTH / 2),
+    rotation: 0,
+    targetRotation: 0
+};
+export function init() {
     console.log('Game initialization started...');
-    
-    // Setup canvas
+    // Setup canvas and drawing context
     canvas = document.getElementById('gameCanvas');
     if (!canvas) {
         console.error('Canvas element not found!');
         return;
     }
-    console.log('Canvas element found:', canvas);
-    
     ctx = canvas.getContext('2d');
     if (!ctx) {
-        console.error('Canvas context not available!');
+        console.error('Canvas 2D context not available!');
         return;
     }
-    console.log('Canvas context obtained:', ctx);
-    
-    // Setup controls
+
     const leftBtn = document.getElementById('left-btn');
     shootBtn = document.getElementById('shoot-btn');
     const rightBtn = document.getElementById('right-btn');
@@ -252,6 +154,7 @@ function init() {
     initStars();
     console.log('Stars initialized, count:', stars.length);
 
+    // Load sprites (delegated to sprites module)
     loadSprites();
     console.log('Sprites loading started');
     
@@ -273,6 +176,9 @@ function init() {
     console.log(`Explosion scale set to: ${CONFIG.EXPLOSION_SCALE}x`);
     
     console.log('Game initialization completed, waiting for sprites to load...');
+    // Kick off the main game loop so the canvas is updated and input works
+    // (requestAnimationFrame is safe to call even if sprites aren't fully loaded yet)
+    requestAnimationFrame(gameLoop);
 }
 
 // Event listeners
@@ -525,276 +431,7 @@ function initStars() {
     }
 }
 
-// Load sprites
-function loadSprites() {
-    console.log('Loading sprites...');
-
-    // Create fallback sprites immediately (synchronous)
-    createFallbackSprites();
-    spritesLoaded = true; // Set to true immediately
-
-    // Load individual enemy sprites asynchronously (don't block game start)
-    const enemyFiles = ['img/enemy/enm1.png', 'img/enemy/enm2.png', 'img/enemy/enm3.png', 'img/enemy/enm4.png', 'img/enemy/enm5.png'];
-    let loadedCount = 0;
-
-    enemyFiles.forEach((file, index) => {
-        const img = new Image();
-        img.onload = () => {
-            console.log(`Loaded sprite: ${file}`);
-
-            // Create canvas for this sprite
-            const canvas = document.createElement('canvas');
-            canvas.width = 16; // Original sprite size
-            canvas.height = 16;
-            const ctx = canvas.getContext('2d');
-
-            // Draw the loaded image to canvas
-            ctx.drawImage(img, 0, 0, 16, 16);
-
-            // Replace fallback sprite with loaded sprite
-            enemySprites[index] = canvas;
-            
-            // Generate collision mask for this sprite
-            spriteCollisionMasks[`enemy${index}`] = generateCollisionMask(img);
-            console.log(`Generated collision mask for enemy${index}:`, spriteCollisionMasks[`enemy${index}`]);
-            
-            // Calculate tight collision bounds
-            spriteBounds[`enemy${index}`] = calculateSpriteBounds(img);
-            console.log(`Calculated tight bounds for enemy${index}:`, spriteBounds[`enemy${index}`]);
-            
-            // Calculate scaled bounds for collision detection
-            const bounds = spriteBounds[`enemy${index}`];
-            scaledSpriteBounds[`enemy${index}`] = {
-                x: bounds.x * CONFIG.ENEMY_SCALE,
-                y: bounds.y * CONFIG.ENEMY_SCALE,
-                width: bounds.width * CONFIG.ENEMY_SCALE,
-                height: bounds.height * CONFIG.ENEMY_SCALE
-            };
-            console.log(`Scaled bounds for enemy${index}:`, scaledSpriteBounds[`enemy${index}`]);
-            
-            // Calculate boss bounds using the same sprite but with boss scaling
-            scaledSpriteBounds[`boss${index}`] = {
-                x: bounds.x * CONFIG.BOSS_SCALE,
-                y: bounds.y * CONFIG.BOSS_SCALE,
-                width: bounds.width * CONFIG.BOSS_SCALE,
-                height: bounds.height * CONFIG.BOSS_SCALE
-            };
-            console.log(`Scaled bounds for boss${index}:`, scaledSpriteBounds[`boss${index}`]);
-            
-            loadedCount++;
-
-            // Check if all sprites are loaded
-            if (loadedCount === enemyFiles.length) {
-                console.log('All enemy sprites loaded successfully!');
-                console.log(`Total sprites loaded: ${enemySprites.length}`);
-                // Start the game loop after all sprites are loaded
-                gameLoop();
-            }
-        };
-        img.onerror = () => {
-            console.error(`Failed to load sprite: ${file} - using fallback`);
-            loadedCount++;
-
-            if (loadedCount === enemyFiles.length) {
-                console.log('Enemy sprites loaded with fallbacks');
-                // Start the game loop even if some sprites failed to load
-                gameLoop();
-            }
-        };
-        img.src = file + '?t=' + Date.now(); // Add timestamp to prevent caching
-    });
-
-    // Load ship sprite asynchronously
-    shipSprite = new Image();
-    shipSprite.onload = () => {
-        console.log('Ship sprite loaded successfully');
-    };
-    shipSprite.onerror = () => {
-        console.error('Failed to load ship sprite - using fallback');
-        createFallbackShip();
-    };
-    shipSprite.src = 'img/ship.png?t=' + Date.now(); // Add timestamp to prevent caching
-
-    // Load logo sprite asynchronously
-    logoSprite = new Image();
-    logoSprite.onload = () => {
-        console.log('Logo sprite loaded successfully');
-    };
-    logoSprite.onerror = () => {
-        console.error('Failed to load logo sprite - will use text fallback');
-    };
-    logoSprite.src = 'img/logo.png?t=' + Date.now(); // Add timestamp to prevent caching
-
-    // Load explosion frames from individual sprite files
-    loadExplosionFrames();
-}
-
-function createFallbackSprites() {
-    console.log('Creating fallback sprites');
-    enemySprites = [];
-
-    // Create red enemy sprite
-    const redCanvas = document.createElement('canvas');
-    redCanvas.width = 16;
-    redCanvas.height = 16;
-    const redCtx = redCanvas.getContext('2d');
-    redCtx.fillStyle = '#ff0000';
-    redCtx.fillRect(2, 2, 12, 12); // Smaller rectangle for sprite look
-    enemySprites.push(redCanvas);
-
-    // Create blue enemy sprite
-    const blueCanvas = document.createElement('canvas');
-    blueCanvas.width = 16;
-    blueCanvas.height = 16;
-    const blueCtx = blueCanvas.getContext('2d');
-    blueCtx.fillStyle = '#0000ff';
-    blueCtx.fillRect(2, 2, 12, 12); // Smaller rectangle for sprite look
-    enemySprites.push(blueCanvas);
-
-    // Create green enemy sprite
-    const greenCanvas = document.createElement('canvas');
-    greenCanvas.width = 16;
-    greenCanvas.height = 16;
-    const greenCtx = greenCanvas.getContext('2d');
-    greenCtx.fillStyle = '#00ff00';
-    greenCtx.fillRect(2, 2, 12, 12); // Smaller rectangle for sprite look
-    enemySprites.push(greenCanvas);
-
-    // Create yellow enemy sprite
-    const yellowCanvas = document.createElement('canvas');
-    yellowCanvas.width = 16;
-    yellowCanvas.height = 16;
-    const yellowCtx = yellowCanvas.getContext('2d');
-    yellowCtx.fillStyle = '#ffff00';
-    yellowCtx.fillRect(2, 2, 12, 12); // Smaller rectangle for sprite look
-    enemySprites.push(yellowCanvas);
-
-    // Create purple enemy sprite
-    const purpleCanvas = document.createElement('canvas');
-    purpleCanvas.width = 16;
-    purpleCanvas.height = 16;
-    const purpleCtx = purpleCanvas.getContext('2d');
-    purpleCtx.fillStyle = '#ff00ff';
-    purpleCtx.fillRect(2, 2, 12, 12); // Smaller rectangle for sprite look
-    enemySprites.push(purpleCanvas);
-
-    console.log('Created fallback sprites:', enemySprites.length);
-}
-
-function createFallbackShip() {
-    console.log('Creating fallback ship sprite');
-    shipSprite = document.createElement('canvas');
-    shipSprite.width = 32;
-    shipSprite.height = 32;
-    const ctx = shipSprite.getContext('2d');
-
-    // Draw a simple ship shape
-    ctx.fillStyle = '#00ff00';
-    // Ship body
-    ctx.fillRect(12, 8, 8, 16);
-    // Ship nose
-    ctx.fillRect(14, 4, 4, 8);
-    // Ship wings
-    ctx.fillRect(8, 16, 16, 4);
-}
-
-function createFallbackExplosions() {
-    console.log('Creating fallback explosion frames...');
-    explosionFrames = [];
-    
-    for (let frame = 0; frame < explosionFrameCount; frame++) {
-        const canvas = document.createElement('canvas');
-        canvas.width = 32; // Larger size for better explosion effect
-        canvas.height = 32;
-        const ctx = canvas.getContext('2d');
-        
-        const centerX = 16;
-        const centerY = 16;
-        const progress = frame / (explosionFrameCount - 1); // 0 to 1
-        
-        // Create expanding explosion effect
-        const maxRadius = 12;
-        const radius = maxRadius * progress;
-        
-        // Outer explosion ring (orange to red)
-        const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
-        gradient.addColorStop(0, `rgba(255, 255, 0, ${1 - progress * 0.8})`);
-        gradient.addColorStop(0.5, `rgba(255, 165, 0, ${1 - progress * 0.9})`);
-        gradient.addColorStop(1, `rgba(255, 0, 0, ${1 - progress})`);
-        
-        ctx.fillStyle = gradient;
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-        ctx.fill();
-        
-        // Add inner bright core
-        if (progress < 0.7) {
-            const coreRadius = radius * 0.3;
-            const coreGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, coreRadius);
-            coreGradient.addColorStop(0, `rgba(255, 255, 255, ${1 - progress})`);
-            coreGradient.addColorStop(1, `rgba(255, 255, 0, ${1 - progress * 1.2})`);
-            
-            ctx.fillStyle = coreGradient;
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, coreRadius, 0, Math.PI * 2);
-            ctx.fill();
-        }
-        
-        // Add explosion particles
-        for (let i = 0; i < 8; i++) {
-            const angle = (i / 8) * Math.PI * 2 + progress * Math.PI * 0.5;
-            const particleDistance = radius * (0.8 + Math.random() * 0.4);
-            const particleX = centerX + Math.cos(angle) * particleDistance;
-            const particleY = centerY + Math.sin(angle) * particleDistance;
-            const particleSize = 2 * (1 - progress);
-            
-            ctx.fillStyle = `rgba(255, ${Math.floor(255 * (1 - progress))}, 0, ${1 - progress * 1.5})`;
-            ctx.beginPath();
-            ctx.arc(particleX, particleY, particleSize, 0, Math.PI * 2);
-            ctx.fill();
-        }
-        
-        explosionFrames.push(canvas);
-    }
-    
-    console.log('Created', explosionFrames.length, 'fallback explosion frames');
-}
-
-// Load explosion frames
-function loadExplosionFrames() {
-    console.log('Loading explosion frames from individual sprite files...');
-    
-    explosionFrames = [];
-    let loadedCount = 0;
-    
-    // Try to load individual explosion frame files
-    for (let i = 1; i <= explosionFrameCount; i++) {
-        const img = new Image();
-        const filename = `img/explosion${i}.png`;
-        
-        img.onload = () => {
-            console.log(`Loaded explosion frame ${i}: ${filename}`);
-            explosionFrames[i - 1] = img; // Store in correct position
-            loadedCount++;
-            
-            if (loadedCount === explosionFrameCount) {
-                console.log('All explosion frames loaded successfully!');
-            }
-        };
-        
-        img.onerror = () => {
-            console.warn(`Failed to load explosion frame ${i}: ${filename} - will create fallback`);
-            loadedCount++;
-            
-            if (loadedCount === explosionFrameCount) {
-                console.log('Some explosion frames failed to load - creating fallbacks');
-                createFallbackExplosions();
-            }
-        };
-        
-        img.src = filename + '?t=' + Date.now(); // Add timestamp to prevent caching
-    }
-}
+// Sprite loading and explosion frame creation moved to js/sprites.js
 
 // Wave system functions
 function initializeWaveSystem() {
@@ -1547,15 +1184,6 @@ function getCurrentSpacing() {
     return Math.max(minSpacing, currentSpacing);
 }
 
-// Check if free lane is safe for spawning (won't create impossible situation)
-function isFreeLaneSafeForSpawning() {
-    if (!boss) return true;
-    
-    // Simplified logic - always allow spawning when boss exists
-    // The boss hurtbox will clear any enemies beneath it
-    return true;
-}
-
 // Boss system functions
 function spawnBoss() {
     console.log("spawnBoss: Spawning boss", {
@@ -1640,14 +1268,6 @@ function updateBoss() {
             startNewWave(); // Start new wave when boss is defeated
         }
     }
-}
-
-function isFreeLaneSafeForSpawning() {
-    if (!boss) return true;
-    
-    // Simplified logic - always allow spawning when boss exists
-    // The boss hurtbox will clear any enemies beneath it
-    return true;
 }
 
 function drawBoss() {
@@ -2724,166 +2344,18 @@ function getPlayerBestScore() {
     };
 }
 
-// Pixel-perfect collision detection system
-let spriteCollisionMasks = {};
-let spriteBounds = {}; // Store tight collision bounds
-let scaledSpriteBounds = {}; // Store scaled collision bounds
+// Pixel-perfect collision detection system (delegated to collision module)
+const spriteCollisionMasks = Collision.spriteCollisionMasks;
+const spriteBounds = Collision.spriteBounds;
+const scaledSpriteBounds = Collision.scaledSpriteBounds;
+const generateCollisionMask = Collision.generateCollisionMask;
+const calculateSpriteBounds = Collision.calculateSpriteBounds;
+const checkPixelCollision = Collision.checkPixelCollision;
+const getSpriteBounds = Collision.getSpriteBounds;
+const rectanglesOverlap = Collision.rectanglesOverlap;
+const getOverlapRegion = Collision.getOverlapRegion;
 
-// Generate collision mask from sprite image data
-function generateCollisionMask(image, threshold = 128) {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = image.width;
-    canvas.height = image.height;
-    
-    ctx.drawImage(image, 0, 0);
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
-    
-    const mask = {
-        width: canvas.width,
-        height: canvas.height,
-        pixels: []
-    };
-    
-    // Create boolean mask where true = solid pixel (not transparent)
-    for (let y = 0; y < canvas.height; y++) {
-        mask.pixels[y] = [];
-        for (let x = 0; x < canvas.width; x++) {
-            const index = (y * canvas.width + x) * 4;
-            const alpha = data[index + 3]; // Alpha channel
-            mask.pixels[y][x] = alpha > threshold; // Consider pixel solid if alpha > threshold
-        }
-    }
-    
-    return mask;
-}
-
-// Calculate tight bounding rectangle based on sprite pixels
-function calculateSpriteBounds(image, threshold = 128) {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = image.width;
-    canvas.height = image.height;
-    
-    ctx.drawImage(image, 0, 0);
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
-    
-    let minX = canvas.width;
-       let maxX = 0;
-    let minY = canvas.height;
-    let maxY = 0;
-    let hasPixels = false;
-    
-    // Find the bounding box of non-transparent pixels
-    for (let y = 0; y < canvas.height; y++) {
-        for (let x = 0; x < canvas.width; x++) {
-            const index = (y * canvas.width + x) * 4;
-            const alpha = data[index + 3]; // Alpha channel
-            
-            if (alpha > threshold) { // Consider pixel solid
-                minX = Math.min(minX, x);
-                maxX = Math.max(maxX, x);
-                minY = Math.min(minY, y);
-                maxY = Math.max(maxY, y);
-                hasPixels = true;
-            }
-        }
-    }
-
-    
-    return {
-        x: minX,
-        y: minY,
-        width: maxX - minX +  1,
-        height: maxY - minY + 1
-    };
-}
-
-// Check pixel-perfect collision between two sprites
-function checkPixelCollision(mask1, mask1_ref, x1, y1, mask2, mask2_ref, x2, y2) {
-    // First do a quick bounding box check
-    const bounds1 = getSpriteBounds(mask1, x1, y1);
-   
-    const bounds2 = getSpriteBounds(mask2, x2, y2);
-    
-    if (!rectanglesOverlap(bounds1, bounds2)) {
-        return false;
-    }
-    
-    // Check overlapping pixels
-    const overlap = getOverlapRegion(bounds1, bounds2);
-    
-    for (let y = overlap.y1; y < overlap.y2; y++) {
-        for (let x = overlap.x1; x < overlap.x2; x++) {
-            // Convert world coordinates to sprite local coordinates
-            const localX1 = x - x1;
-            const localY1 = y - y1;
-            const localX2 = x - x2;
-            const localY2 = y - y2;
-            
-            // Check bounds and pixel data existence
-            if (localX1 >= 0 && localX1 < mask1.width && localY1 >= 0 && localY1 < mask1.height &&
-                localX2 >= 0 && localX2 < mask2.width && localY2 >= 0 && localY2 < mask2.height &&
-                mask1.pixels && mask1.pixels[localY1] && mask1.pixels[localY1][localX1] !== undefined &&
-                mask2.pixels && mask2.pixels[localY2] && mask2.pixels[localY2][localX2] !== undefined) {
-                
-                if (mask1.pixels[localY1][localX1] && mask2.pixels[localY2][localX2]) {
-                    return true; // Collision detected
-                }
-            }
-        }
-    }
-    
-    return false;
-}
-
-// Get bounding box of non-transparent pixels
-function getSpriteBounds(mask, worldX, worldY) {
-    let minX = mask.width;
-    let maxX = 0;
-    let minY = mask.height;
-    let maxY = 0;
-    
-    for (let y = 0; y < mask.height; y++) {
-        for (let x = 0; x < mask.width; x++) {
-            if (mask.pixels[y][x]) {
-                minX = Math.min(minX, x);
-                maxX = Math.max(maxX, x);
-                minY = Math.min(minY, y);
-                maxY = Math.max(maxY, y);
-            }
-        }
-    }
-
-    
-    return {
-        x: worldX + minX,
-        y: worldY + minY,
-        width: maxX - minX + 1,
-       
-        height: maxY - minY + 1
-    };
-}
-
-// Check if two rectangles overlap
-function rectanglesOverlap(rect1, rect2) {
-    return !(rect1.x + rect1.width < rect2.x ||
-             rect2.x + rect2.width < rect1.x ||
-             rect1.y + rect1.height < rect2.y ||
-             rect2.y + rect2.height < rect1.y);
-}
-
-// Get the overlapping region between two rectangles
-function getOverlapRegion(rect1, rect2) {
-    const x1 = Math.max(rect1.x, rect2.x);
-    const y1 = Math.max(rect1.y, rect2.y);
-    const x2 = Math.min(rect1.x + rect1.width, rect2.x + rect2.width);
-    const y2 = Math.min(rect1.y + rect1.height, rect2.y + rect2.height);
-    
-    return { x1, y1, x2, y2 };
-}
+// rectanglesOverlap and getOverlapRegion are provided by the collision module
 
 // Create a rectangular collision mask (all pixels solid)
 function createRectangularMask(width, height) {
@@ -2913,5 +2385,4 @@ function getMaxHighscoreScrollOffset() {
     return Math.max(0, (totalScrollableItems - visibleItems) * scrollItemHeight);
 }
 
-// Initialize
-window.addEventListener('load', init);
+// Initialization is invoked from module entry (js/main.js)

@@ -10,3 +10,16 @@ __pycache__/
 
 # Python virtual env
 venv/
+/.venv/
+
+# Logs
+*.log
+*.err
+*.out
+
+# Test and runtime artifacts
+test-artifacts/
+
+# Local IDE and OS files
+.DS_Store
+Thumbs.db
