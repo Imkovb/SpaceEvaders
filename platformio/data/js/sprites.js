@@ -6,6 +6,7 @@ export let explosionFrames = [];
 export let spritesLoaded = false;
 
 import { CONFIG } from './config.js';
+import * as Collision from './collision.js';
 
 export function loadSprites() {
     spritesLoaded = false;
@@ -86,6 +87,49 @@ export function loadSprites() {
     Promise.all(loadPromises).then(() => {
         spritesLoaded = true;
         console.log('All sprites loaded or fallbacks created. enemySprites:', enemySprites.length, 'explosionFrames:', explosionFrames.length);
+        
+        // Generate collision masks for all sprites
+        console.log('Generating collision masks...');
+        
+        // Player ship mask
+        if (shipSprite) {
+            Collision.spriteCollisionMasks['ship'] = Collision.generateCollisionMask(shipSprite);
+            Collision.spriteBounds['ship'] = Collision.calculateSpriteBounds(shipSprite);
+            console.log('Generated collision mask for ship');
+        }
+        
+        // Enemy sprite masks
+        enemySprites.forEach((sprite, idx) => {
+            const key = `enemy${idx}`;
+            Collision.spriteCollisionMasks[key] = Collision.generateCollisionMask(sprite);
+            Collision.spriteBounds[key] = Collision.calculateSpriteBounds(sprite);
+            
+            // Generate scaled masks for common scales
+            const enemyScale = CONFIG.ENEMY_SCALE || 4;
+            const specialScale = CONFIG.SPECIAL_ENEMY_SCALE || 2;
+            const bossScale = CONFIG.BOSS_SCALE || 8;
+            
+            // Generate and cache scaled masks - use string keys to handle decimal scales
+            const enemyScaleMask = Collision.generateScaledCollisionMask(sprite, enemyScale);
+            if (enemyScaleMask) {
+                Collision.spriteCollisionMasks[`${key}_scale${enemyScale}`] = enemyScaleMask;
+            }
+            
+            const specialScaleMask = Collision.generateScaledCollisionMask(sprite, specialScale);
+            if (specialScaleMask) {
+                Collision.spriteCollisionMasks[`${key}_scale${specialScale}`] = specialScaleMask;
+            }
+            
+            const bossScaleMask = Collision.generateScaledCollisionMask(sprite, bossScale);
+            if (bossScaleMask) {
+                Collision.spriteCollisionMasks[`boss${idx}_scale${bossScale}`] = bossScaleMask;
+            }
+                
+            console.log(`Generated collision masks for enemy${idx} at scales: ${enemyScale}, ${specialScale}, boss: ${bossScale}`);
+        });
+        
+        console.log('Collision mask generation complete!');
+        
         // Diagnostic: report each enemy sprite type and dimensions
         enemySprites.forEach((s, idx) => {
             try {

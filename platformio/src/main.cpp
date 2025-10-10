@@ -9,6 +9,8 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
 
 // OLED Display Configuration
 #define SCREEN_WIDTH 128
@@ -67,6 +69,9 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 // WiFi AP Configuration
 const char* AP_SSID = "SpaceEvaders";
 const char* AP_PASSWORD = "";  // Empty password for open AP
+// Maximum number of stations that can connect to the ESP32 SoftAP.
+// ESP32 supports up to 10 stations in AP mode (SDK limit). Using the max here.
+const uint8_t MAX_AP_CONNECTIONS = 10;
 
 // Web server on port 80
 AsyncWebServer server(80);
@@ -75,6 +80,9 @@ DNSServer dnsServer;
 
 // Connection tracking
 int activeConnections = 0;
+
+// Mutex to protect highscores file read/write operations
+SemaphoreHandle_t highscoresMutex = nullptr;
 
 // Highscore file path
 const char* HIGHSCORE_FILE = "/highscore.json";
@@ -169,6 +177,12 @@ void setup() {
         }
     }
     Serial.println("LittleFS mounted successfully");
+    
+    // Create mutex after FS is ready
+    highscoresMutex = xSemaphoreCreateMutex();
+    if (highscoresMutex == nullptr) {
+        Serial.println("Failed to create highscores mutex - concurrency issues may occur");
+    }
     
     // Update global highscore variables
     updateGlobalHighscores();
@@ -289,13 +303,17 @@ void setupWiFiAP() {
     Serial.println("Setting up WiFi Access Point...");
     
     // Configure soft AP
-    WiFi.softAP(AP_SSID, AP_PASSWORD);
+    // Use explicit parameters: channel=1, hidden=0 (visible), max_connection=MAX_AP_CONNECTIONS
+    // Signature: WiFi.softAP(ssid, passphrase, channel, ssid_hidden, max_connection)
+    WiFi.softAP(AP_SSID, AP_PASSWORD, 1 /*channel*/, 0 /*hidden*/, MAX_AP_CONNECTIONS /*max_connection*/);
     
     Serial.println("WiFi AP started");
     Serial.print("AP SSID: ");
     Serial.println(AP_SSID);
     Serial.print("AP IP Address: ");
     Serial.println(WiFi.softAPIP());
+    Serial.print("AP Max Connections: ");
+    Serial.println(MAX_AP_CONNECTIONS);
     
     // Start DNS server with captive portal support
     dnsServer.start(53, "*", WiFi.softAPIP());
@@ -389,9 +407,13 @@ void setupWebServer() {
 }
 
 bool loadHighscores(JsonArray& highscores) {
+    // Serialize access to filesystem to avoid reading during a write
+    if (highscoresMutex) xSemaphoreTake(highscoresMutex, portMAX_DELAY);
+    
     File file = LittleFS.open(HIGHSCORE_FILE, "r");
     if (!file) {
         Serial.println("Failed to open highscore file for reading");
+        if (highscoresMutex) xSemaphoreGive(highscoresMutex);
         return false;
     }
     
@@ -401,6 +423,7 @@ bool loadHighscores(JsonArray& highscores) {
     
     if (error) {
         Serial.println("Failed to parse highscore JSON");
+        if (highscoresMutex) xSemaphoreGive(highscoresMutex);
         return false;
     }
     
@@ -410,14 +433,20 @@ bool loadHighscores(JsonArray& highscores) {
             highscores.add(score);
         }
     }
-    
+    if (highscoresMutex) xSemaphoreGive(highscoresMutex);
     return true;
 }
 
 bool saveHighscores(const JsonArray& highscores) {
-    File file = LittleFS.open(HIGHSCORE_FILE, "w");
+    // Serialize write operations
+    if (highscoresMutex) xSemaphoreTake(highscoresMutex, portMAX_DELAY);
+
+    // Write to a temporary file and then atomically rename to avoid partial writes
+    const char* TMP_FILE = "/highscore.json.tmp";
+    File file = LittleFS.open(TMP_FILE, "w");
     if (!file) {
-        Serial.println("Failed to open highscore file for writing");
+        Serial.println("Failed to open temp highscore file for writing");
+        if (highscoresMutex) xSemaphoreGive(highscoresMutex);
         return false;
     }
     
@@ -431,14 +460,24 @@ bool saveHighscores(const JsonArray& highscores) {
     if (serializeJson(doc, file) == 0) {
         Serial.println("Failed to write highscore JSON");
         file.close();
+        LittleFS.remove(TMP_FILE);
+        if (highscoresMutex) xSemaphoreGive(highscoresMutex);
         return false;
     }
     
     file.close();
-    
+    // Replace the original file with the temp file atomically
+    LittleFS.remove(HIGHSCORE_FILE); // Ignore result; ensure target path free
+    if (!LittleFS.rename(TMP_FILE, HIGHSCORE_FILE)) {
+        Serial.println("Failed to replace highscore file with temp file");
+        LittleFS.remove(TMP_FILE);
+        if (highscoresMutex) xSemaphoreGive(highscoresMutex);
+        return false;
+    }
+
     // Update global highscore variables after successful save
     updateGlobalHighscores();
-    
+    if (highscoresMutex) xSemaphoreGive(highscoresMutex);
     return true;
 }
 
@@ -672,7 +711,7 @@ void handleGetConnections(AsyncWebServerRequest* request) {
     
     DynamicJsonDocument doc(256);
     doc["activeConnections"] = activeConnections;
-    doc["maxConnections"] = WiFi.softAPgetStationNum();
+    doc["maxConnections"] = MAX_AP_CONNECTIONS;
     
     String response;
     serializeJson(doc, response);
@@ -751,8 +790,10 @@ void displayWiFiStatus() {
     display.setCursor(0, 36);
     display.print(F("Status: Ready"));
     display.setCursor(0, 48);
-    display.print(F("Connections: "));
+    display.print(F("Conn: "));
     display.print(activeConnections);
+    display.print(F("/"));
+    display.print(MAX_AP_CONNECTIONS);
     display.display();
 }
 
@@ -764,8 +805,10 @@ void displayConnectionsAndHighscores() {
     
     display.clearDisplay();
     display.setCursor(0, 0);
-    display.print(F("Connections: "));
+    display.print(F("Conn: "));
     display.print(activeConnections);
+    display.print(F("/"));
+    display.print(MAX_AP_CONNECTIONS);
     
     display.setCursor(0, 12);
     display.print(F("TOP 3 SCORES:"));

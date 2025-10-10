@@ -60,6 +60,9 @@ def add_highscore():
         # Handle both single highscore and highscores array
         if 'highscores' in data:
             highscores = data['highscores']
+            # Limit to top 10000 scores to prevent unlimited growth
+            highscores.sort(key=lambda x: x.get('score', 0), reverse=True)
+            highscores = highscores[:10000]
             save_highscores(highscores)
             return jsonify({'success': True, 'message': 'Highscores saved successfully'})
         else:
@@ -68,12 +71,28 @@ def add_highscore():
             score = data.get('score', 0)
             date = data.get('date', datetime.now().isoformat())
             player_fingerprint = data.get('playerFingerprint', 'unknown')
+            
+            # Validate inputs
+            if not isinstance(score, (int, float)) or score < 0:
+                return jsonify({'success': False, 'error': 'Invalid score'}), 400
+            
+            if not isinstance(name, str) or len(name) > 15:
+                return jsonify({'success': False, 'error': 'Invalid name'}), 400
+            
+            # Sanitize name server-side
+            import re
+            name = re.sub(r'[<>]', '', name)  # Remove HTML tags
+            name = re.sub(r'[^\w\s\-_.]', '', name)  # Keep only safe characters
+            name = name[:15]  # Enforce max length
+            
+            if not name.strip():
+                name = 'Anonymous'
 
             highscores = load_highscores()
 
             new_highscore = {
                 'name': name,
-                'score': score,
+                'score': int(score),  # Ensure score is integer
                 'date': date,
                 'playerFingerprint': player_fingerprint
             }
@@ -81,6 +100,9 @@ def add_highscore():
             highscores.append(new_highscore)
             # Sort by score in descending order (highest first)
             highscores.sort(key=lambda x: x.get('score', 0), reverse=True)
+            
+            # Keep only top 10000 scores
+            highscores = highscores[:10000]
 
             save_highscores(highscores)
             return jsonify({'success': True, 'message': 'Highscore added successfully'})

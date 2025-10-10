@@ -55,16 +55,19 @@ export const CONFIG = {
     BOSS_WIDTH: 200,
     BOSS_HEIGHT: 200,
     BOSS_SPAWN_CHANCE: 0.005,
-    BOSS_SPEED: 0.99,
+    BOSS_SPEED: 2, // Same as OBSTACLE_SPEED to match enemy speed
     BOSS_COLOR: '#FF0000',
     // Boss Hurtbox Settings
     BOSS_HURTBOX_HEIGHT: 100,
     BOSS_HURTBOX_WIDTH: 200,
     BOSS_HURTBOX_OFFSET: 0,
+    // Safety gap to keep special (3-mini) enemies away from the boss vertically (in free lane)
+    // This reduces unwinnable situations where the player cannot clear all three before passing the boss
+    BOSS_FREE_LANE_SPECIAL_SAFE_GAP: 220,
     // Highscore Challenge Settings
     HIGHSCORE_CHALLENGE_THRESHOLD: 0.85,
-    HIGHSCORE_CHALLENGE_MULTIPLIER: 12.0,
-    HIGHSCORE_CHALLENGE_SPAWN_MULTIPLIER: 20.0,
+    HIGHSCORE_CHALLENGE_MULTIPLIER: 3.0, // Reduced from 12.0 for better balance
+    HIGHSCORE_CHALLENGE_SPAWN_MULTIPLIER: 3.0, // Reduced from 20.0 for playability
     // Explosion Settings
     EXPLOSION_FRAME_DURATION_MS: 67,
     EXPLOSION_SCALE: 1.5,
