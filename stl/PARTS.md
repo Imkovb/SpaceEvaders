@@ -7,5 +7,5 @@
 | M3 Button Head Screw (8mm)   | 2        | Secures lid to front housing               |
 | ESP32 D1 Mini                | 1        | Hosts the game and Wi‑Fi AP                |
 | OLED Display (0.98", I²C)    | 1        | Displays top 3 highscores and status       |
-
+| Miniature Micro Push Button  | 1        | Hardware Highscore reset button            |
 ---
