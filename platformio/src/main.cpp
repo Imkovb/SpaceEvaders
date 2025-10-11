@@ -441,44 +441,56 @@ bool saveHighscores(const JsonArray& highscores) {
     // Serialize write operations
     if (highscoresMutex) xSemaphoreTake(highscoresMutex, portMAX_DELAY);
 
-    // Write to a temporary file and then atomically rename to avoid partial writes
+    bool saveSucceeded = false;
     const char* TMP_FILE = "/highscore.json.tmp";
-    File file = LittleFS.open(TMP_FILE, "w");
-    if (!file) {
-        Serial.println("Failed to open temp highscore file for writing");
-        if (highscoresMutex) xSemaphoreGive(highscoresMutex);
-        return false;
-    }
-    
-    DynamicJsonDocument doc(JSON_DOC_SIZE);
-    JsonArray destArray = doc.createNestedArray("highscores");
-    
-    for (JsonObject score : highscores) {
-        destArray.add(score);
-    }
-    
-    if (serializeJson(doc, file) == 0) {
-        Serial.println("Failed to write highscore JSON");
+    File file;
+
+    do {
+        // Write to a temporary file and then atomically rename to avoid partial writes
+        file = LittleFS.open(TMP_FILE, "w");
+        if (!file) {
+            Serial.println("Failed to open temp highscore file for writing");
+            break;
+        }
+
+        DynamicJsonDocument doc(JSON_DOC_SIZE);
+        JsonArray destArray = doc.createNestedArray("highscores");
+
+        for (JsonObject score : highscores) {
+            destArray.add(score);
+        }
+
+        if (serializeJson(doc, file) == 0) {
+            Serial.println("Failed to write highscore JSON");
+            file.close();
+            LittleFS.remove(TMP_FILE);
+            break;
+        }
+
         file.close();
-        LittleFS.remove(TMP_FILE);
-        if (highscoresMutex) xSemaphoreGive(highscoresMutex);
-        return false;
-    }
-    
-    file.close();
-    // Replace the original file with the temp file atomically
-    LittleFS.remove(HIGHSCORE_FILE); // Ignore result; ensure target path free
-    if (!LittleFS.rename(TMP_FILE, HIGHSCORE_FILE)) {
-        Serial.println("Failed to replace highscore file with temp file");
-        LittleFS.remove(TMP_FILE);
-        if (highscoresMutex) xSemaphoreGive(highscoresMutex);
-        return false;
+        // Replace the original file with the temp file atomically
+        LittleFS.remove(HIGHSCORE_FILE); // Ignore result; ensure target path free
+        if (!LittleFS.rename(TMP_FILE, HIGHSCORE_FILE)) {
+            Serial.println("Failed to replace highscore file with temp file");
+            LittleFS.remove(TMP_FILE);
+            break;
+        }
+
+        saveSucceeded = true;
+    } while (false);
+
+    if (file) {
+        file.close();
     }
 
-    // Update global highscore variables after successful save
-    updateGlobalHighscores();
     if (highscoresMutex) xSemaphoreGive(highscoresMutex);
-    return true;
+
+    if (saveSucceeded) {
+        // Refresh cached top scores after releasing the mutex to avoid deadlock
+        updateGlobalHighscores();
+    }
+
+    return saveSucceeded;
 }
 
 void updateGlobalHighscores() {
