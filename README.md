@@ -140,7 +140,7 @@ pio device monitor -b 115200
 
 Base URL:
 - Local dev: `http://127.0.0.1:5000`
-- On-device: `http://spaceevaders` (captive DNS) or AP IP `http://192.168.4.1`
+- On-device: `http://space` (captive DNS) or AP IP `http://192.168.4.1`
 
 GET `/api/highscores`
 - Response: `{ "highscores": [ { name, score, date, playerFingerprint }, ... ] }`
