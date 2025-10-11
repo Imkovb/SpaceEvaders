@@ -1,12 +1,15 @@
 # SpaceEvaders
 
-A fast, lane-based arcade shooter you can play in the browser hosted directly from an ESP32. Includes highscores, bosses, pixel-perfect sprites, and a captive-portal style Wi‑Fi AP for “plug-and-play” gaming. Get youre name on the OLED screen if youre in the top3. Creates a local "online" competitive gaming experience perfect for frends or at a party.  
+A fast-paced, lane-based arcade shooter playable directly in your browser—hosted from an ESP32. Featuring pixel-perfect sprites, boss battles, highscore tracking, and a captive-portal style Wi‑Fi AP for true “plug-and-play” gaming. If you rank in the top 3, your name appears on the OLED screen. It’s a local “online” competitive experience, perfect with friends or at parties.
 
-![Main Screenshot](assets/screenshots/main.png)
+<img src="assets/screenshots/main.png" width="25%" />
 
 - Web client: HTML/CSS/JS in `platformio/data`
 - Firmware: ESP32 (Arduino) in `platformio/src`
 - Local dev server: Flask app `server.py` with `/api/highscores`
+
+ <img src="assets/screenshots/photo2.png" width="50%" />
+
 
 ## Features
 
@@ -23,7 +26,11 @@ A fast, lane-based arcade shooter you can play in the browser hosted directly fr
 <p align="center">
   <img src="assets/screenshots/gameplay_1.png" width="30%" />
   <img src="assets/screenshots/gameplay_2.png" width="30%" />
+</p>
+
+<p align="center">
   <img src="assets/screenshots/gameplay_boss.png" width="30%" />
+  <img src="assets/screenshots/highscore.png" width="30%" />
 </p>
 
 ## Project structure
@@ -165,4 +172,6 @@ This project is licensed under the Apache License 2.0 — see the [LICENSE](LICE
 
 ---
 
-Made with love for tiny arcades. If you build a cabinet or case, check out the `STL/` folder for printable parts.
+  <img src="assets/screenshots/photo1.png" width="25%" />
+
+Made with love for tiny arcades. Check out the `STL/` folder for printable parts.
