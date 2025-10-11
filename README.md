@@ -171,6 +171,42 @@ Most tuning happens in `platformio/data/js/config.js`:
 
 You can safely tweak values and reload your browser or re-upload `uploadfs` to test on-device.
 
+## Screenshots
+
+Keep screenshots and other project images in a dedicated folder (recommended: `assets/screenshots/`) and include them in the README using relative paths. This keeps the repository organized and ensures images render on GitHub and in forks.
+
+Example single image:
+
+![Gameplay screenshot](assets/screenshots/placeholder.svg)
+
+Example gallery (small thumbnails):
+
+<img src="assets/screenshots/shot1.svg" alt="Gameplay 1" width="300"> <img src="assets/screenshots/shot2.svg" alt="Gameplay 2" width="300"> <img src="assets/screenshots/shot3.svg" alt="Gameplay 3" width="300">
+
+Tips:
+- Use descriptive alt text for accessibility.
+- Prefer PNG for screenshots with sharp UI elements, JPEG/WebP for photographic images to save space.
+- Keep images under ~1–2 MB where possible so repository clones stay small.
+- If you need to add many large images or high-resolution assets, consider using Git LFS.
+
+Quick PowerShell commands to resize/optimize images (ImageMagick required):
+
+```powershell
+# Resize to 1200px wide and optimize quality
+magick convert input.png -resize 1200x -strip -quality 85 output.png
+
+# Convert many PNGs to optimized WebP
+magick mogrify -format webp -quality 80 -path assets/screenshots/ assets/screenshots/*.png
+```
+
+Add new screenshots by saving files into `assets/screenshots/` and committing them. Example:
+
+```powershell
+git add assets/screenshots/my-shot.png
+git commit -m "Add gameplay screenshot"
+git push
+```
+
 ## API
 
 Base URL:

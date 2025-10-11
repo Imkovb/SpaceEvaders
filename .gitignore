@@ -23,3 +23,6 @@ test-artifacts/
 # Local IDE and OS files
 .DS_Store
 Thumbs.db
+
+# Local state files
+platformio/data/highscore.json

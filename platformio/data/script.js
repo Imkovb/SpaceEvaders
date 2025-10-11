@@ -121,6 +121,22 @@ let player = {
     targetRotation: 0
 };
 
+// Helper to map pointer coordinates into canvas space when it is CSS-scaled
+function getCanvasCoordinates(clientX, clientY) {
+    if (!canvas) {
+        return { x: clientX, y: clientY };
+    }
+
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = rect.width !== 0 ? canvas.width / rect.width : 1;
+    const scaleY = rect.height !== 0 ? canvas.height / rect.height : 1;
+
+    return {
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY
+    };
+}
+
 // Validate configuration values
 function validateConfig() {
     const errors = [];
@@ -354,9 +370,9 @@ function setupEventListeners() {
 
     // Mouse tracking for menu buttons
     canvas.addEventListener('mousemove', (e) => {
-        const rect = canvas.getBoundingClientRect();
-        mouseX = e.clientX - rect.left;
-        mouseY = e.clientY - rect.top;
+        const { x, y } = getCanvasCoordinates(e.clientX, e.clientY);
+        mouseX = x;
+        mouseY = y;
     });
 
     // Mouse wheel for highscore scrolling
@@ -383,7 +399,9 @@ function setupEventListeners() {
 
     canvas.addEventListener('touchstart', (e) => {
         if (gameState === 'highscoreDisplay' && highscores.length > 5) {
-            touchStartY = e.touches[0].clientY;
+            const touch = e.touches[0];
+            const { y } = getCanvasCoordinates(touch.clientX, touch.clientY);
+            touchStartY = y;
             touchStartScrollOffset = highscoreScrollOffset;
         }
     });
@@ -392,7 +410,8 @@ function setupEventListeners() {
         if (gameState === 'highscoreDisplay' && highscores.length > 5) {
             e.preventDefault(); // Prevent page scrolling
             
-            const touchY = e.touches[0].clientY;
+            const touch = e.touches[0];
+            const { y: touchY } = getCanvasCoordinates(touch.clientX, touch.clientY);
             const deltaY = touchStartY - touchY; // Inverted for natural scrolling
             const maxScroll = getMaxHighscoreScrollOffset();
             
@@ -403,9 +422,7 @@ function setupEventListeners() {
     // Canvas click
     canvas.addEventListener('click', (e) => {
         console.log('Canvas clicked at:', e.clientX, e.clientY);
-        const rect = canvas.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        const clickY = e.clientY - rect.top;
+        const { x: clickX, y: clickY } = getCanvasCoordinates(e.clientX, e.clientY);
         console.log('Canvas coordinates:', clickX, clickY);
         console.log('Current game state:', gameState);
 
@@ -918,7 +935,20 @@ function updateObstacles() {
             }
         } else {
             // Normal spawning when no boss
-            lane = Math.floor(Math.random() * CONFIG.LANES);
+            const bias = Math.max(1, CONFIG.PLAYER_LANE_SPAWN_WEIGHT || 1);
+            const laneWeights = Array.from({ length: CONFIG.LANES }, (_, index) => index === player.currentLane ? bias : 1);
+            const totalWeight = laneWeights.reduce((sum, weight) => sum + weight, 0);
+            let roll = Math.random() * totalWeight;
+            for (let i = 0; i < laneWeights.length; i++) {
+                roll -= laneWeights[i];
+                if (roll <= 0) {
+                    lane = i;
+                    break;
+                }
+            }
+            if (lane === undefined) {
+                lane = CONFIG.LANES - 1; // Fallback in unlikely floating-point edge cases
+            }
         }
         
         // Check if there's enough space in this lane
@@ -1424,8 +1454,13 @@ function shouldSpawnObstacle() {
     // Dynamic minimum time between spawns based on game speed
     // As game speed increases, spawn more frequently to maintain enemy density
     const baseMinTime = CONFIG.MIN_TIME_BETWEEN_SPAWNS;
-    // More aggressive reduction in minimum time as speed increases
-    const dynamicMinTime = Math.max(3, baseMinTime / Math.pow(gameSpeed, 0.6)); // Minimum 3 frames, scales faster
+    const speedPower = CONFIG.MIN_TIME_BETWEEN_SPAWNS_SPEED_POWER || 0.85;
+    const speedBonus = CONFIG.MIN_TIME_BETWEEN_SPAWNS_SPEED_BONUS || 0.5;
+    const minFrames = CONFIG.MIN_TIME_BETWEEN_SPAWNS_MIN_FRAMES || 3;
+
+    // Scale the spacing down more aggressively as speed rises, but clamp to a playable floor
+    const speedScaling = Math.pow(gameSpeed, speedPower) * (1 + Math.max(0, gameSpeed - 1) * speedBonus);
+    const dynamicMinTime = Math.max(minFrames, baseMinTime / Math.max(1, speedScaling));
     
     // Check if enough time has passed since last spawn
     if (score - lastSpawnTime < dynamicMinTime) {
