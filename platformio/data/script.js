@@ -86,6 +86,11 @@ let showDebugCollision = false; // toggle for debug collision overlays (defined 
 let showCollisionBoxes = false; // toggle for showing collision boxes (bounding boxes)
 let showPixelPerfectOutlines = false; // toggle for showing pixel-perfect collision outlines
 
+// Frame timing variables for fixed timestep game loop
+let lastFrameTime = 0; // timestamp of last frame
+let accumulator = 0; // accumulated time for fixed timestep updates
+const FIXED_TIME_STEP = 1000 / 60; // 16.67ms per frame for 60 FPS
+
 // Wave / spawning state
 let currentWave = 0;
 let currentWaveEnemyIndex = -1;
@@ -747,10 +752,27 @@ function drawExplosions() {
     });
 }
 
-// Game loop
-function gameLoop() {
-    //console.log('Game loop running, gameState:', gameState);
-    update();
+// Game loop with fixed timestep for consistent gameplay across all devices
+function gameLoop(currentTime) {
+    // Initialize lastFrameTime on first run
+    if (lastFrameTime === 0) {
+        lastFrameTime = currentTime;
+    }
+    
+    // Calculate delta time since last frame
+    const deltaTime = currentTime - lastFrameTime;
+    lastFrameTime = currentTime;
+    
+    // Add delta time to accumulator (cap at 100ms to avoid spiral of death)
+    accumulator += Math.min(deltaTime, 100);
+    
+    // Update game logic at fixed timestep (60 FPS)
+    while (accumulator >= FIXED_TIME_STEP) {
+        update();
+        accumulator -= FIXED_TIME_STEP;
+    }
+    
+    // Always render at display refresh rate for smooth visuals
     draw();
     requestAnimationFrame(gameLoop);
 }
