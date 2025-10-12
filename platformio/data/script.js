@@ -87,6 +87,8 @@ let showCollisionBoxes = false; // toggle for showing collision boxes (bounding 
 let showPixelPerfectOutlines = false; // toggle for showing pixel-perfect collision outlines
 
 // Frame timing variables for fixed timestep game loop
+// This ensures the game runs at consistent 60 FPS on all devices regardless of display refresh rate
+// Without this, the game would run faster on 120Hz/144Hz displays, making gameplay unfair
 let lastFrameTime = 0; // timestamp of last frame
 let accumulator = 0; // accumulated time for fixed timestep updates
 const FIXED_TIME_STEP = 1000 / 60; // 16.67ms per frame for 60 FPS
