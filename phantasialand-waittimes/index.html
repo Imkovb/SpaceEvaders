@@ -435,8 +435,30 @@ footer a { color: var(--accent); }
     els.summary.textContent = `${openCount} open · ${allRides.length - openCount} closed`;
   }
 
+  // Opening this file directly (file://) makes the browser send
+  // Origin: null on every request, which queue-times.com and the proxy
+  // fallbacks all reject — every fetch then fails identically with a
+  // generic "Failed to fetch". Detect that case up front so the error
+  // is actionable instead of looking like a connectivity problem.
+  function fileOriginWarning() {
+    if (window.location.protocol === "file:") {
+      return "This page was opened as a local file, which browsers block from making network requests. Host it somewhere with http(s):// (e.g. GitHub Pages — see the README) and open it from that URL instead.";
+    }
+    return null;
+  }
+
   async function refresh(userTriggered) {
     if (userTriggered) els.refreshBtn.classList.add("spinning");
+    const originIssue = fileOriginWarning();
+    if (originIssue) {
+      els.loading.hidden = true;
+      els.error.hidden = false;
+      els.error.textContent = originIssue;
+      if (userTriggered) {
+        setTimeout(() => els.refreshBtn.classList.remove("spinning"), 700);
+      }
+      return;
+    }
     try {
       const parkId = await getParkId();
       const raw = await fetchJson(QUEUE_URL(parkId));
