@@ -278,25 +278,43 @@ footer a { color: var(--accent); }
   let lastData = null; // { lands: [{ name, rides: [...] }] }
   let refreshTimer = null;
 
+  const FETCH_TIMEOUT_MS = 8000;
+
+  async function fetchWithTimeout(url) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    try {
+      const res = await fetch(url, { cache: "no-store", signal: controller.signal });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
   // Fetches JSON directly, falling back to public CORS proxies if the
-  // browser blocks the cross-origin request outright.
+  // browser blocks the cross-origin request outright. Each attempt gets a
+  // short timeout so one hanging/blocked proxy doesn't stall the whole
+  // chain, and failures are collected so the final error explains where
+  // things actually broke (straight network failure vs. every proxy also
+  // being unreachable, e.g. blocked by an ad-blocker or firewall).
   async function fetchJson(url) {
     const attempts = [
-      url,
-      `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
-      `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+      { label: "direct", target: url },
+      { label: "corsproxy.io", target: `https://corsproxy.io/?url=${encodeURIComponent(url)}` },
+      { label: "allorigins.win", target: `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}` },
+      { label: "codetabs", target: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}` },
     ];
-    let lastErr;
+    const failures = [];
     for (const attempt of attempts) {
       try {
-        const res = await fetch(attempt, { cache: "no-store" });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return await res.json();
+        return await fetchWithTimeout(attempt.target);
       } catch (err) {
-        lastErr = err;
+        const reason = err.name === "AbortError" ? "timed out" : err.message;
+        failures.push(`${attempt.label}: ${reason}`);
       }
     }
-    throw lastErr;
+    throw new Error(`all sources unreachable (${failures.join("; ")})`);
   }
 
   // Some mobile browsers and file:// / sandboxed preview contexts deny
