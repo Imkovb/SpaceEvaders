@@ -7,13 +7,18 @@ step, no backend, no other files needed.
 
 ## Run it on your phone
 
-Simplest: just open `index.html` directly in your phone's browser (e.g. AirDrop
-it, email it to yourself, or save it from a cloud drive) and tap to open. You
-can also "Add to Home Screen" for an app-like icon.
+It needs to be served over `http(s)://`, not opened as a local file. When a
+browser loads a page from `file://`, it sends `Origin: null` on every
+request, and queue-times.com (plus the public CORS-proxy fallbacks) reject
+that origin — so opening the downloaded file directly and tapping it fails
+with "Failed to fetch" every time.
 
-Other options:
-- **GitHub Pages**: enable Pages for this repo (Settings → Pages → deploy from
-  branch, folder `/phantasialand-waittimes`), then open the resulting URL.
+- **GitHub Pages** (recommended, free, no accounts beyond GitHub): this repo
+  also has a copy at `/docs/index.html` for exactly this purpose. Enable it
+  once under Settings → Pages → Source: "Deploy from a branch" → pick this
+  branch → folder `/docs` → Save. Then just open the resulting
+  `https://<user>.github.io/<repo>/` URL on your phone and "Add to Home
+  Screen".
 - **Any static host** (Netlify, Vercel, S3, etc.): drop the file in as-is.
 - **Locally on your own machine, phone on the same Wi-Fi**:
   ```
