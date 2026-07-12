@@ -37,6 +37,24 @@ with "Failed to fetch" every time.
   gray (closed). You can search by ride name or sort by wait time instead of
   park layout.
 - If the browser blocks the direct request (CORS), it automatically retries
-  through a couple of public CORS proxies.
+  through a fetch-based proxy, then a JSONP script-tag fallback.
+
+### Navigation
+
+queue-times.com doesn't provide ride coordinates, so instead of guessing GPS
+positions, each ride is calibrated on-site: tap the 📍 next to a ride (List
+view), and the first time you're standing near it, tap "Set my location as
+this ride" to save your phone's real GPS fix for it (kept in `localStorage`).
+Once calibrated, it shows live distance + compass bearing to that ride and a
+button that opens native Maps for real walking directions.
+
+### Map view
+
+The **Map** tab plots every calibrated ride on an OpenStreetMap tile mosaic
+(plain `<img>` tile requests, no API key), colored/labeled by live wait time,
+with a live "you are here" dot. Tap a marker to open its navigation panel.
+Uncalibrated rides simply don't appear yet — calibrate them from List view
+and they'll show up on the map automatically. Map tiles are © OpenStreetMap
+contributors.
 
 No API keys, accounts, or server needed.

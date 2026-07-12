@@ -153,7 +153,165 @@ header h1 {
   color: #fff;
 }
 
+#view-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px 10px;
+}
+
+#view-tabs button {
+  flex: 1 1 auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text-dim);
+  padding: 9px 12px;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+#view-tabs button.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
 main { padding: 0 16px 24px; }
+
+#map-view[hidden] { display: none; }
+
+#map-controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+#map-controls button {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  padding: 7px 10px;
+  font-size: 0.82rem;
+}
+
+#map-frame {
+  position: relative;
+  width: 100%;
+  height: 58vh;
+  min-height: 320px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--closed-bg);
+  touch-action: none;
+}
+
+#map-tiles, #map-markers {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#map-markers { pointer-events: none; }
+
+.map-tile {
+  position: absolute;
+  width: 256px;
+  height: 256px;
+  display: block;
+}
+
+.map-marker {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.map-marker .pin {
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: 999px;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.map-marker .pin.green { background: var(--green); }
+.map-marker .pin.amber { background: var(--amber); }
+.map-marker .pin.red { background: var(--red); }
+.map-marker .pin.closed { background: var(--closed); }
+.map-marker .tail {
+  width: 0; height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #fff;
+  margin-top: -1px;
+}
+
+.map-marker .label {
+  position: absolute;
+  top: -16px;
+  font-size: 0.68rem;
+  color: var(--text);
+  background: var(--surface);
+  padding: 1px 5px;
+  border-radius: 6px;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
+
+#map-you {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #2b8cff;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 4px rgba(43,140,255,0.35);
+  transform: translate(-50%, -50%);
+  transition: left 0.3s linear, top 0.3s linear;
+}
+
+#map-you[hidden] { display: none; }
+
+#map-attribution {
+  position: absolute;
+  right: 4px;
+  bottom: 2px;
+  font-size: 0.62rem;
+  background: rgba(255,255,255,0.75);
+  color: #222;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+#map-hint {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  padding: 30px 12px;
+}
+
+#map-legend {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin-top: 10px;
+  text-align: center;
+}
 
 #loading, #error {
   text-align: center;
@@ -349,6 +507,11 @@ footer a { color: var(--accent); }
   <div id="last-updated"></div>
 </header>
 
+<div id="view-tabs" role="group" aria-label="View">
+  <button data-view="list" class="active">List</button>
+  <button data-view="map">Map</button>
+</div>
+
 <div id="controls">
   <input id="search" type="search" placeholder="Search a ride…" autocomplete="off" />
   <div id="sort-toggle" role="group" aria-label="Sort order">
@@ -362,6 +525,23 @@ footer a { color: var(--accent); }
   <div id="error" hidden></div>
   <div id="lands"></div>
 </main>
+
+<div id="map-view" hidden style="padding: 0 16px 24px;">
+  <div id="map-controls">
+    <button id="map-recenter">📍 Center on me</button>
+    <button id="map-fit">🎢 Center on rides</button>
+    <button id="map-zoom-out">−</button>
+    <button id="map-zoom-in">+</button>
+  </div>
+  <div id="map-frame">
+    <div id="map-tiles"></div>
+    <div id="map-markers"></div>
+    <div id="map-you" hidden></div>
+    <div id="map-attribution">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" style="color:inherit;">OpenStreetMap</a> contributors</div>
+  </div>
+  <div id="map-hint"></div>
+  <div id="map-legend"></div>
+</div>
 
 <footer>
   Data from <a href="https://queue-times.com" target="_blank" rel="noopener">queue-times.com</a> · auto-refreshes every 60s
@@ -399,6 +579,20 @@ footer a { color: var(--accent); }
     navRideName: document.getElementById("nav-ride-name"),
     navClose: document.getElementById("nav-close"),
     navBody: document.getElementById("nav-body"),
+    viewTabs: document.getElementById("view-tabs"),
+    controls: document.getElementById("controls"),
+    content: document.getElementById("content"),
+    mapView: document.getElementById("map-view"),
+    mapFrame: document.getElementById("map-frame"),
+    mapTiles: document.getElementById("map-tiles"),
+    mapMarkers: document.getElementById("map-markers"),
+    mapYou: document.getElementById("map-you"),
+    mapHint: document.getElementById("map-hint"),
+    mapLegend: document.getElementById("map-legend"),
+    mapRecenter: document.getElementById("map-recenter"),
+    mapFit: document.getElementById("map-fit"),
+    mapZoomIn: document.getElementById("map-zoom-in"),
+    mapZoomOut: document.getElementById("map-zoom-out"),
   };
 
   let sortMode = "land";
@@ -731,6 +925,228 @@ footer a { color: var(--accent); }
     }
   }
 
+  // --- Map view ----------------------------------------------------------
+  // Renders a small mosaic of OpenStreetMap tiles (plain <img> requests,
+  // so this works the same places the JSONP fallback does) with ride
+  // markers plotted from whatever calibrated locations exist, colored/
+  // labeled by the same live wait-time data as the list view.
+
+  const TILE_SIZE = 256;
+  let mapZoom = 18;
+  let mapCenter = null; // { lat, lon }
+  let mapWatchId = null;
+  let currentView = "list";
+
+  function lonToPxX(lon, zoom) {
+    return ((lon + 180) / 360) * Math.pow(2, zoom) * TILE_SIZE;
+  }
+  function latToPxY(lat, zoom) {
+    const rad = (lat * Math.PI) / 180;
+    return ((1 - Math.log(Math.tan(rad) + 1 / Math.cos(rad)) / Math.PI) / 2) * Math.pow(2, zoom) * TILE_SIZE;
+  }
+  function screenPosFor(lat, lon) {
+    const frameW = els.mapFrame.clientWidth;
+    const frameH = els.mapFrame.clientHeight;
+    const cpx = lonToPxX(mapCenter.lon, mapZoom);
+    const cpy = latToPxY(mapCenter.lat, mapZoom);
+    return {
+      left: lonToPxX(lon, mapZoom) - cpx + frameW / 2,
+      top: latToPxY(lat, mapZoom) - cpy + frameH / 2,
+    };
+  }
+
+  // Ride coordinates live under localStorage keys like "pl_loc_<id>", but
+  // there's no direct "list all keys with this prefix" API, so scan both
+  // localStorage (if reachable) and the in-memory fallback map used when
+  // it isn't, unioning the two so current-session calibrations still show
+  // up even in storage-blocked contexts.
+  function getAllRideLocs() {
+    const result = new Map();
+    const LOC_PREFIX = "pl_loc_";
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key || !key.startsWith(LOC_PREFIX)) continue;
+        const raw = localStorage.getItem(key);
+        if (!raw) continue;
+        try {
+          result.set(key.slice(LOC_PREFIX.length), JSON.parse(raw));
+        } catch (e) {
+          // skip corrupt entry
+        }
+      }
+    } catch (e) {
+      // localStorage inaccessible; memory fallback below still applies
+    }
+    for (const [key, raw] of memoryStore) {
+      if (!key.startsWith(LOC_PREFIX) || !raw) continue;
+      try {
+        result.set(key.slice(LOC_PREFIX.length), JSON.parse(raw));
+      } catch (e) {
+        // skip corrupt entry
+      }
+    }
+    return result;
+  }
+
+  function averageRideLocs() {
+    const locs = [...getAllRideLocs().values()].filter((l) => l && typeof l.lat === "number");
+    if (!locs.length) return null;
+    return {
+      lat: locs.reduce((s, l) => s + l.lat, 0) / locs.length,
+      lon: locs.reduce((s, l) => s + l.lon, 0) / locs.length,
+    };
+  }
+
+  function buildRideIndex() {
+    const map = new Map();
+    if (lastData) {
+      for (const land of lastData) {
+        for (const ride of land.rides) map.set(String(ride.id), ride);
+      }
+    }
+    return map;
+  }
+
+  function renderMapTiles() {
+    if (!mapCenter) return;
+    const frameW = els.mapFrame.clientWidth;
+    const frameH = els.mapFrame.clientHeight;
+    const cpx = lonToPxX(mapCenter.lon, mapZoom);
+    const cpy = latToPxY(mapCenter.lat, mapZoom);
+    const minPxX = cpx - frameW / 2;
+    const minPxY = cpy - frameH / 2;
+    const minTileX = Math.floor(minPxX / TILE_SIZE);
+    const maxTileX = Math.floor((cpx + frameW / 2) / TILE_SIZE);
+    const minTileY = Math.floor(minPxY / TILE_SIZE);
+    const maxTileY = Math.floor((cpy + frameH / 2) / TILE_SIZE);
+    const tilesPerSide = Math.pow(2, mapZoom);
+
+    els.mapTiles.innerHTML = "";
+    for (let tx = minTileX; tx <= maxTileX; tx++) {
+      for (let ty = minTileY; ty <= maxTileY; ty++) {
+        if (ty < 0 || ty >= tilesPerSide) continue;
+        const wrappedX = ((tx % tilesPerSide) + tilesPerSide) % tilesPerSide;
+        const img = document.createElement("img");
+        img.className = "map-tile";
+        img.loading = "lazy";
+        img.alt = "";
+        img.src = `https://tile.openstreetmap.org/${mapZoom}/${wrappedX}/${ty}.png`;
+        img.style.left = `${tx * TILE_SIZE - minPxX}px`;
+        img.style.top = `${ty * TILE_SIZE - minPxY}px`;
+        els.mapTiles.appendChild(img);
+      }
+    }
+  }
+
+  function renderMapMarkers() {
+    if (!mapCenter) return;
+    els.mapMarkers.innerHTML = "";
+    const rideIndex = buildRideIndex();
+    let placedCount = 0;
+    for (const [rideId, loc] of getAllRideLocs()) {
+      if (!loc || typeof loc.lat !== "number") continue;
+      placedCount++;
+      const ride = rideIndex.get(rideId);
+      const pos = screenPosFor(loc.lat, loc.lon);
+
+      const marker = document.createElement("div");
+      marker.className = "map-marker";
+      marker.style.left = `${pos.left}px`;
+      marker.style.top = `${pos.top}px`;
+
+      const label = document.createElement("div");
+      label.className = "label";
+      label.textContent = ride ? ride.name : `Ride ${rideId}`;
+
+      const pin = document.createElement("div");
+      pin.className = `pin ${ride ? waitClass(ride) : "closed"}`;
+      pin.textContent = ride ? waitLabel(ride).replace(" min", "m") : "?";
+
+      const tail = document.createElement("div");
+      tail.className = "tail";
+
+      marker.appendChild(label);
+      marker.appendChild(pin);
+      marker.appendChild(tail);
+      marker.addEventListener("click", () => openNav(rideId, ride ? ride.name : `Ride ${rideId}`));
+      els.mapMarkers.appendChild(marker);
+    }
+
+    const totalRides = lastData ? lastData.flatMap((l) => l.rides).length : 0;
+    els.mapLegend.textContent = totalRides
+      ? `${placedCount} of ${totalRides} rides placed — use the 📍 button in List view to calibrate more.`
+      : "";
+  }
+
+  function updateYouDot(lat, lon) {
+    if (!mapCenter) return;
+    const pos = screenPosFor(lat, lon);
+    els.mapYou.style.left = `${pos.left}px`;
+    els.mapYou.style.top = `${pos.top}px`;
+    els.mapYou.hidden = false;
+  }
+
+  function renderMapFull() {
+    els.mapHint.textContent = "";
+    renderMapTiles();
+    renderMapMarkers();
+  }
+
+  function stopMapWatch() {
+    if (mapWatchId !== null && navigator.geolocation) {
+      navigator.geolocation.clearWatch(mapWatchId);
+      mapWatchId = null;
+    }
+  }
+
+  function startMapWatch() {
+    stopMapWatch();
+    if (!navigator.geolocation) return;
+    mapWatchId = navigator.geolocation.watchPosition(
+      (pos) => updateYouDot(pos.coords.latitude, pos.coords.longitude),
+      () => {
+        // live position just won't be shown; the map itself still works
+      },
+      { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
+    );
+  }
+
+  function initMapCenter(onReady) {
+    if (mapCenter) {
+      onReady();
+      return;
+    }
+    const avg = averageRideLocs();
+    if (avg) {
+      mapCenter = avg;
+      onReady();
+      return;
+    }
+    if (!navigator.geolocation) {
+      els.mapHint.textContent = "No rides calibrated yet. Use the 📍 button in List view to calibrate a ride first.";
+      return;
+    }
+    els.mapHint.textContent = "Getting your location…";
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        mapCenter = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+        onReady();
+      },
+      () => {
+        els.mapHint.textContent = "Calibrate at least one ride (📍 button in List view) or allow location access to see the map.";
+      },
+      { enableHighAccuracy: true, timeout: 15000 }
+    );
+  }
+
+  function showMap() {
+    initMapCenter(() => {
+      renderMapFull();
+      startMapWatch();
+    });
+  }
+
   function waitClass(ride) {
     if (!ride.is_open) return "closed";
     if (ride.wait_time <= 20) return "green";
@@ -824,6 +1240,7 @@ footer a { color: var(--accent); }
       els.error.hidden = true;
       els.lastUpdated.textContent = `Updated ${new Date().toLocaleTimeString()}`;
       render();
+      if (currentView === "map" && mapCenter) renderMapMarkers();
     } catch (err) {
       if (!lastData) {
         els.loading.hidden = true;
@@ -872,6 +1289,63 @@ footer a { color: var(--accent); }
   els.navClose.addEventListener("click", closeNav);
   els.navOverlay.addEventListener("click", (e) => {
     if (e.target === els.navOverlay) closeNav();
+  });
+
+  els.viewTabs.addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-view]");
+    if (!btn || btn.dataset.view === currentView) return;
+    currentView = btn.dataset.view;
+    for (const b of els.viewTabs.querySelectorAll("button")) {
+      b.classList.toggle("active", b === btn);
+    }
+    if (currentView === "map") {
+      els.content.hidden = true;
+      els.controls.hidden = true;
+      els.mapView.hidden = false;
+      showMap();
+    } else {
+      stopMapWatch();
+      els.mapView.hidden = true;
+      els.content.hidden = false;
+      els.controls.hidden = false;
+    }
+  });
+
+  els.mapRecenter.addEventListener("click", () => {
+    if (!navigator.geolocation) return;
+    els.mapHint.textContent = "Getting your location…";
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        mapCenter = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+        renderMapFull();
+        startMapWatch();
+      },
+      (err) => { els.mapHint.textContent = `Couldn't get your location: ${err.message}`; },
+      { enableHighAccuracy: true, timeout: 15000 }
+    );
+  });
+
+  els.mapFit.addEventListener("click", () => {
+    const avg = averageRideLocs();
+    if (!avg) {
+      els.mapHint.textContent = "No rides calibrated yet — use the 📍 button in List view first.";
+      return;
+    }
+    mapCenter = avg;
+    renderMapFull();
+  });
+
+  els.mapZoomIn.addEventListener("click", () => {
+    mapZoom = Math.min(19, mapZoom + 1);
+    renderMapFull();
+  });
+  els.mapZoomOut.addEventListener("click", () => {
+    mapZoom = Math.max(14, mapZoom - 1);
+    renderMapFull();
+  });
+
+  window.addEventListener("resize", () => {
+    if (currentView === "map" && mapCenter) renderMapFull();
   });
 
   refresh(false);
