@@ -194,7 +194,23 @@ main { padding: 0 16px 24px; }
 
 .ride + .ride { border-top: 1px solid var(--border); }
 
-.ride-name { font-size: 0.95rem; }
+.ride-name { font-size: 0.95rem; flex: 1 1 auto; min-width: 0; }
+
+.nav-btn {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--accent);
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-btn:active { transform: scale(0.9); }
 
 .wait-badge {
   flex: 0 0 auto;
@@ -224,6 +240,103 @@ footer {
 }
 
 footer a { color: var(--accent); }
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 20;
+}
+
+.modal-overlay[hidden] { display: none; }
+
+.modal-card {
+  width: 100%;
+  max-width: 480px;
+  background: var(--surface);
+  border-radius: 18px 18px 0 0;
+  padding: 18px 18px calc(env(safe-area-inset-bottom) + 18px);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.modal-header h3 { margin: 0; font-size: 1.05rem; }
+
+#nav-close {
+  border: none;
+  background: var(--closed-bg);
+  color: var(--text);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 1rem;
+}
+
+.nav-compass {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 10px 0;
+}
+
+.nav-arrow {
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--green-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  transition: transform 0.2s ease;
+}
+
+.nav-stats { font-size: 0.9rem; color: var(--text-dim); }
+.nav-stats strong { color: var(--text); font-size: 1.15rem; }
+
+.nav-btn-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.nav-action {
+  flex: 1 1 auto;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.88rem;
+  text-align: center;
+  text-decoration: none;
+}
+
+.nav-action.primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.nav-note {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin-top: 10px;
+}
+
+.nav-error { color: var(--red); font-size: 0.85rem; margin-top: 8px; }
 </style>
 </head>
 <body>
@@ -254,6 +367,16 @@ footer a { color: var(--accent); }
   Data from <a href="https://queue-times.com" target="_blank" rel="noopener">queue-times.com</a> · auto-refreshes every 60s
 </footer>
 
+<div id="nav-overlay" class="modal-overlay" hidden>
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 id="nav-ride-name"></h3>
+      <button id="nav-close" aria-label="Close">✕</button>
+    </div>
+    <div id="nav-body"></div>
+  </div>
+</div>
+
 <script>
 (() => {
   "use strict";
@@ -272,6 +395,10 @@ footer a { color: var(--accent); }
     lands: document.getElementById("lands"),
     search: document.getElementById("search"),
     sortToggle: document.getElementById("sort-toggle"),
+    navOverlay: document.getElementById("nav-overlay"),
+    navRideName: document.getElementById("nav-ride-name"),
+    navClose: document.getElementById("nav-close"),
+    navBody: document.getElementById("nav-body"),
   };
 
   let sortMode = "land";
@@ -370,21 +497,56 @@ footer a { color: var(--accent); }
   }
 
   // Some mobile browsers and file:// / sandboxed preview contexts deny
-  // access to localStorage entirely, so fall back to an in-memory value.
-  let memoryParkId = null;
-  function readParkId() {
+  // access to localStorage entirely, so fall back to an in-memory map.
+  const memoryStore = new Map();
+  function readLS(key) {
     try {
-      return localStorage.getItem(PARK_ID_KEY);
+      return localStorage.getItem(key);
     } catch (e) {
-      return memoryParkId;
+      return memoryStore.has(key) ? memoryStore.get(key) : null;
     }
   }
-  function writeParkId(id) {
-    memoryParkId = id;
+  function writeLS(key, value) {
+    memoryStore.set(key, value);
     try {
-      localStorage.setItem(PARK_ID_KEY, id);
+      localStorage.setItem(key, value);
     } catch (e) {
       // ignore, memory fallback already set
+    }
+  }
+  function readParkId() {
+    return readLS(PARK_ID_KEY);
+  }
+  function writeParkId(id) {
+    writeLS(PARK_ID_KEY, id);
+  }
+
+  // Ride coordinates aren't provided by queue-times.com, so instead of
+  // guessing GPS positions, each ride's location is calibrated on-site:
+  // the first time you're standing near it, tapping "Set my location"
+  // saves your current GPS fix under that ride's id for future visits.
+  function rideLocKey(rideId) {
+    return `pl_loc_${rideId}`;
+  }
+  function readRideLoc(rideId) {
+    const raw = readLS(rideLocKey(rideId));
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw);
+    } catch (e) {
+      return null;
+    }
+  }
+  function writeRideLoc(rideId, lat, lon) {
+    writeLS(rideLocKey(rideId), JSON.stringify({ lat, lon, savedAt: Date.now() }));
+  }
+  function clearRideLoc(rideId) {
+    writeLS(rideLocKey(rideId), "");
+    memoryStore.delete(rideLocKey(rideId));
+    try {
+      localStorage.removeItem(rideLocKey(rideId));
+    } catch (e) {
+      // ignore
     }
   }
 
@@ -410,6 +572,163 @@ footer a { color: var(--accent); }
       lands.push({ name: "Other", rides: raw.rides });
     }
     return lands;
+  }
+
+  // --- In-park navigation ---------------------------------------------
+
+  const EARTH_RADIUS_M = 6371000;
+  const toRad = (deg) => (deg * Math.PI) / 180;
+
+  function haversineMeters(lat1, lon1, lat2, lon2) {
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+    return EARTH_RADIUS_M * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  function bearingDegrees(lat1, lon1, lat2, lon2) {
+    const y = Math.sin(toRad(lon2 - lon1)) * Math.cos(toRad(lat2));
+    const x =
+      Math.cos(toRad(lat1)) * Math.sin(toRad(lat2)) -
+      Math.sin(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.cos(toRad(lon2 - lon1));
+    const degrees = (Math.atan2(y, x) * 180) / Math.PI;
+    return (degrees + 360) % 360;
+  }
+
+  const COMPASS_POINTS = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+  function compassLabel(deg) {
+    return COMPASS_POINTS[Math.round(deg / 45) % 8];
+  }
+
+  function formatDistance(meters) {
+    if (meters < 1000) return `${Math.round(meters)} m`;
+    return `${(meters / 1000).toFixed(2)} km`;
+  }
+
+  let navRideId = null;
+  let navRideName = "";
+  let navWatchId = null;
+
+  function stopNavWatch() {
+    if (navWatchId !== null && navigator.geolocation) {
+      navigator.geolocation.clearWatch(navWatchId);
+      navWatchId = null;
+    }
+  }
+
+  function closeNav() {
+    stopNavWatch();
+    els.navOverlay.hidden = true;
+    navRideId = null;
+  }
+
+  function renderNavError(message) {
+    els.navBody.innerHTML = `<div class="nav-error"></div>`;
+    els.navBody.querySelector(".nav-error").textContent = message;
+  }
+
+  function renderCalibratePrompt() {
+    els.navBody.innerHTML = "";
+    const p = document.createElement("p");
+    p.className = "nav-stats";
+    p.textContent = `This ride's location hasn't been set yet. Stand near ${navRideName} and tap below to save your current GPS position for it.`;
+    const btn = document.createElement("button");
+    btn.className = "nav-action primary";
+    btn.style.display = "block";
+    btn.style.width = "100%";
+    btn.style.marginTop = "10px";
+    btn.textContent = "Set my location as this ride";
+    btn.addEventListener("click", calibrateCurrentRide);
+    els.navBody.appendChild(p);
+    els.navBody.appendChild(btn);
+  }
+
+  function mapsUrl(lat, lon) {
+    return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}&travelmode=walking`;
+  }
+
+  function renderNavLive(loc, here) {
+    const distance = haversineMeters(here.lat, here.lon, loc.lat, loc.lon);
+    const bearing = bearingDegrees(here.lat, here.lon, loc.lat, loc.lon);
+    els.navBody.innerHTML = "";
+
+    const compass = document.createElement("div");
+    compass.className = "nav-compass";
+    const arrow = document.createElement("div");
+    arrow.className = "nav-arrow";
+    arrow.style.transform = `rotate(${bearing}deg)`;
+    arrow.textContent = "↑";
+    const stats = document.createElement("div");
+    stats.className = "nav-stats";
+    stats.innerHTML = `<strong>${formatDistance(distance)}</strong> away · ${Math.round(bearing)}° (${compassLabel(bearing)})`;
+    compass.appendChild(arrow);
+    compass.appendChild(stats);
+    els.navBody.appendChild(compass);
+
+    const note = document.createElement("div");
+    note.className = "nav-note";
+    note.textContent = "Arrow points toward the ride relative to true North — check your phone's compass to line it up.";
+    els.navBody.appendChild(note);
+
+    const actions = document.createElement("div");
+    actions.className = "nav-btn-row";
+    const openMaps = document.createElement("a");
+    openMaps.className = "nav-action primary";
+    openMaps.href = mapsUrl(loc.lat, loc.lon);
+    openMaps.target = "_blank";
+    openMaps.rel = "noopener";
+    openMaps.textContent = "Open walking directions";
+    const recalibrate = document.createElement("button");
+    recalibrate.className = "nav-action";
+    recalibrate.textContent = "Recalibrate here";
+    recalibrate.addEventListener("click", calibrateCurrentRide);
+    actions.appendChild(openMaps);
+    actions.appendChild(recalibrate);
+    els.navBody.appendChild(actions);
+  }
+
+  function startNavWatch(loc) {
+    stopNavWatch();
+    if (!navigator.geolocation) {
+      renderNavError("Geolocation isn't available in this browser.");
+      return;
+    }
+    navWatchId = navigator.geolocation.watchPosition(
+      (pos) => renderNavLive(loc, { lat: pos.coords.latitude, lon: pos.coords.longitude }),
+      (err) => renderNavError(`Couldn't read your location: ${err.message}`),
+      { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
+    );
+  }
+
+  function calibrateCurrentRide() {
+    if (!navigator.geolocation) {
+      renderNavError("Geolocation isn't available in this browser.");
+      return;
+    }
+    els.navBody.innerHTML = `<p class="nav-stats">Getting your location…</p>`;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        writeRideLoc(navRideId, pos.coords.latitude, pos.coords.longitude);
+        startNavWatch({ lat: pos.coords.latitude, lon: pos.coords.longitude });
+      },
+      (err) => renderNavError(`Couldn't get your location: ${err.message}. This may require the app to be opened over https — see README.`),
+      { enableHighAccuracy: true, timeout: 15000 }
+    );
+  }
+
+  function openNav(rideId, rideName) {
+    navRideId = rideId;
+    navRideName = rideName;
+    els.navRideName.textContent = rideName;
+    els.navOverlay.hidden = false;
+    const loc = readRideLoc(rideId);
+    if (loc) {
+      startNavWatch(loc);
+    } else {
+      renderCalibratePrompt();
+    }
   }
 
   function waitClass(ride) {
@@ -473,8 +792,16 @@ footer a { color: var(--accent); }
           badge.className = `wait-badge ${waitClass(ride)}`;
           badge.textContent = waitLabel(ride);
 
+          const navBtn = document.createElement("button");
+          navBtn.className = "nav-btn";
+          navBtn.textContent = "📍";
+          navBtn.setAttribute("aria-label", `Navigate to ${ride.name}`);
+          navBtn.dataset.rideId = ride.id;
+          navBtn.dataset.rideName = ride.name;
+
           row.appendChild(name);
           row.appendChild(badge);
+          row.appendChild(navBtn);
           list.appendChild(row);
         }
         section.appendChild(list);
@@ -535,6 +862,16 @@ footer a { color: var(--accent); }
 
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") refresh(false);
+  });
+
+  els.lands.addEventListener("click", (e) => {
+    const btn = e.target.closest(".nav-btn");
+    if (!btn) return;
+    openNav(btn.dataset.rideId, btn.dataset.rideName);
+  });
+  els.navClose.addEventListener("click", closeNav);
+  els.navOverlay.addEventListener("click", (e) => {
+    if (e.target === els.navOverlay) closeNav();
   });
 
   refresh(false);
