@@ -342,17 +342,49 @@ main { padding: 0 16px 24px; }
   border: 1px solid var(--border);
 }
 
+.ride-item + .ride-item { border-top: 1px solid var(--border); }
+
 .ride {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 12px 14px;
   gap: 10px;
+  cursor: pointer;
 }
 
-.ride + .ride { border-top: 1px solid var(--border); }
+.ride-chevron {
+  flex: 0 0 auto;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  transition: transform 0.15s ease;
+}
+
+.ride.expanded .ride-chevron { transform: rotate(90deg); }
 
 .ride-name { font-size: 0.95rem; flex: 1 1 auto; min-width: 0; }
+
+.ride-detail {
+  padding: 0 14px 14px 34px;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+}
+
+.ride-detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 3px 0;
+}
+
+.ride-detail-row span:last-child { color: var(--text); text-align: right; }
+
+.ride-detail .nav-action {
+  display: inline-block;
+  width: auto;
+  margin-top: 8px;
+  padding: 7px 14px;
+}
 
 .nav-btn {
   flex: 0 0 auto;
@@ -600,6 +632,7 @@ footer a { color: var(--accent); }
   let sortMode = "land";
   let lastData = null; // { lands: [{ name, rides: [...] }] }
   let refreshTimer = null;
+  const expandedRideIds = new Set();
 
   const FETCH_TIMEOUT_MS = 8000;
 
@@ -1219,6 +1252,52 @@ footer a { color: var(--accent); }
     return `${ride.wait_time} min`;
   }
 
+  function formatRideTime(iso) {
+    if (!iso) return null;
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return null;
+    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  }
+
+  function detailRow(label, value) {
+    const row = document.createElement("div");
+    row.className = "ride-detail-row";
+    const l = document.createElement("span");
+    l.textContent = label;
+    const v = document.createElement("span");
+    v.textContent = value;
+    row.appendChild(l);
+    row.appendChild(v);
+    return row;
+  }
+
+  function buildRideDetail(ride, areaName) {
+    const detail = document.createElement("div");
+    detail.className = "ride-detail";
+
+    detail.appendChild(
+      detailRow("Status", ride.is_open ? `Open · ${ride.wait_time} min wait` : "Closed")
+    );
+    detail.appendChild(detailRow("Area", areaName));
+
+    const updatedTime = formatRideTime(ride.last_updated);
+    if (updatedTime) detail.appendChild(detailRow("Wait last updated", updatedTime));
+
+    const loc = readRideLoc(String(ride.id));
+    detail.appendChild(detailRow("Location", loc ? "Calibrated" : "Not calibrated yet"));
+
+    const navBtn = document.createElement("button");
+    navBtn.className = "nav-action primary";
+    navBtn.textContent = loc ? "Navigate" : "Set location & navigate";
+    navBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openNav(String(ride.id), ride.name);
+    });
+    detail.appendChild(navBtn);
+
+    return detail;
+  }
+
   function render() {
     if (!lastData) return;
     const query = els.search.value.trim().toLowerCase();
@@ -1229,7 +1308,7 @@ footer a { color: var(--accent); }
     }));
 
     if (sortMode === "wait") {
-      const all = lands.flatMap((l) => l.rides);
+      const all = lands.flatMap((l) => l.rides.map((r) => ({ ...r, _landName: l.name })));
       all.sort((a, b) => {
         if (a.is_open !== b.is_open) return a.is_open ? -1 : 1;
         return (b.wait_time || 0) - (a.wait_time || 0);
@@ -1257,8 +1336,19 @@ footer a { color: var(--accent); }
         const list = document.createElement("div");
         list.className = "ride-list";
         for (const ride of land.rides) {
+          const rideIdStr = String(ride.id);
+          const isExpanded = expandedRideIds.has(rideIdStr);
+
+          const item = document.createElement("div");
+          item.className = "ride-item";
+
           const row = document.createElement("div");
-          row.className = "ride";
+          row.className = `ride${isExpanded ? " expanded" : ""}`;
+          row.dataset.rideId = rideIdStr;
+
+          const chevron = document.createElement("span");
+          chevron.className = "ride-chevron";
+          chevron.textContent = "›";
 
           const name = document.createElement("span");
           name.className = "ride-name";
@@ -1272,13 +1362,20 @@ footer a { color: var(--accent); }
           navBtn.className = "nav-btn";
           navBtn.textContent = "📍";
           navBtn.setAttribute("aria-label", `Navigate to ${ride.name}`);
-          navBtn.dataset.rideId = ride.id;
+          navBtn.dataset.rideId = rideIdStr;
           navBtn.dataset.rideName = ride.name;
 
+          row.appendChild(chevron);
           row.appendChild(name);
           row.appendChild(badge);
           row.appendChild(navBtn);
-          list.appendChild(row);
+
+          const detail = buildRideDetail(ride, ride._landName || land.name);
+          detail.hidden = !isExpanded;
+
+          item.appendChild(row);
+          item.appendChild(detail);
+          list.appendChild(item);
         }
         section.appendChild(list);
         els.lands.appendChild(section);
@@ -1343,8 +1440,19 @@ footer a { color: var(--accent); }
 
   els.lands.addEventListener("click", (e) => {
     const btn = e.target.closest(".nav-btn");
-    if (!btn) return;
-    openNav(btn.dataset.rideId, btn.dataset.rideName);
+    if (btn) {
+      openNav(btn.dataset.rideId, btn.dataset.rideName);
+      return;
+    }
+    const row = e.target.closest(".ride");
+    if (!row) return;
+    const detail = row.nextElementSibling;
+    if (!detail || !detail.classList.contains("ride-detail")) return;
+    const willExpand = detail.hidden;
+    detail.hidden = !willExpand;
+    row.classList.toggle("expanded", willExpand);
+    if (willExpand) expandedRideIds.add(row.dataset.rideId);
+    else expandedRideIds.delete(row.dataset.rideId);
   });
   els.navClose.addEventListener("click", closeNav);
   els.navOverlay.addEventListener("click", (e) => {
