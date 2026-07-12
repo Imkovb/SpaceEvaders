@@ -39,6 +39,16 @@ with "Failed to fetch" every time.
 - If the browser blocks the direct request (CORS), it automatically retries
   through a fetch-based proxy, then a JSONP script-tag fallback.
 
+### Ride details
+
+Tap any ride row (not the 📍 icon) to expand it in place: status restated in
+words, that ride's own last-updated time, its area, calibration status, and
+a short description. Descriptions are a small static reference list baked
+into the app (not fetched live — queue-times.com has no description field),
+kept deliberately general rather than precise stats that are easy to get
+subtly wrong or go stale. Rides not in that list show "No description
+available yet" rather than guessing.
+
 ### Navigation
 
 queue-times.com doesn't provide ride coordinates, so instead of guessing GPS

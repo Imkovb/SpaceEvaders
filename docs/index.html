@@ -379,6 +379,12 @@ main { padding: 0 16px 24px; }
 
 .ride-detail-row span:last-child { color: var(--text); text-align: right; }
 
+.ride-desc {
+  margin: 0 0 8px;
+  color: var(--text);
+  line-height: 1.4;
+}
+
 .ride-detail .nav-action {
   display: inline-block;
   width: auto;
@@ -1271,9 +1277,47 @@ footer a { color: var(--accent); }
     return row;
   }
 
+  // Best-effort reference text, not sourced live like the wait times —
+  // queue-times.com has no description field, and this app has no way to
+  // fetch one at runtime that's reliably matched and accurate either. Kept
+  // deliberately general (ride type + theme + area) rather than precise
+  // stats (speeds, heights, opening years) that are easy to get subtly
+  // wrong or that go stale. Matched fuzzily via the same name-matching
+  // used for the OpenStreetMap import, so naming variants still resolve.
+  const RIDE_DESCRIPTIONS = [
+    ["Taron", "Launched steel roller coaster in Klugheim, themed around a dragon watching over a Nordic-style village. Known for hugging the terrain at high speed."],
+    ["F.L.Y.", "Flying roller coaster in Klugheim where riders lie face-down soaring through the air, alongside Taron's mountain."],
+    ["Raik", "Launched steel coaster in Klugheim, themed around the dragon Taron's mount."],
+    ["Black Mamba", "Inverted roller coaster in the Deep in Africa area, themed around venomous snakes, with multiple inversions."],
+    ["River Quest", "Whitewater raft ride through the Deep in Africa area — expect to get soaked."],
+    ["Chiapas", "Water coaster in the Mexico-themed area with a steep drop and a splashdown finale."],
+    ["Colorado Adventure", "Mine-train style roller coaster in the Mexico area, themed around a runaway mining cart."],
+    ["Talocan", "Swinging ship-style ride in the Mexico area."],
+    ["Winja's Fear", "One half of a pair of interlocking spinning roller coasters in Wuze Town, themed around rival wizard families."],
+    ["Winja's Force", "The other half of the interlocking Winja's coasters in Wuze Town, themed around rival wizard families."],
+    ["Feng Ju Palace", "Spinning dark ride through the China-themed area."],
+    ["Maus au Chocolat", "Family dark ride through a chocolate-factory-themed castle in the Mystery area."],
+    ["Temple of the Night Hawk", "Dark ride with a steep drop, themed around an ancient temple, in the Mystery area."],
+    ["Geister Rikscha", "Family dark ride through ghostly rickshaw-themed halls in the Mystery area."],
+    ["Hoellenblitz", "Wild-mouse style roller coaster in the Fantasy area."],
+    ["Crazy Bats", "Spinning, bat-themed family ride in the Fantasy area."],
+    ["Wellenflug", "Swinging chair ride in the Fantasy area."],
+  ];
+
+  function findRideDescription(name) {
+    const hit = RIDE_DESCRIPTIONS.find(([key]) => namesMatch(key, name));
+    return hit ? hit[1] : null;
+  }
+
   function buildRideDetail(ride, areaName) {
     const detail = document.createElement("div");
     detail.className = "ride-detail";
+
+    const description = findRideDescription(ride.name);
+    const desc = document.createElement("p");
+    desc.className = "ride-desc";
+    desc.textContent = description || "No description available yet for this ride.";
+    detail.appendChild(desc);
 
     detail.appendChild(
       detailRow("Status", ride.is_open ? `Open · ${ride.wait_time} min wait` : "Closed")
