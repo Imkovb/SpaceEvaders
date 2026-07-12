@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#1b1030" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Phantasialand" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="icon.svg" />
+<title>Phantasialand Wait Times</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header>
+  <h1>Phantasialand</h1>
+  <div id="status-line">
+    <span id="summary">Loading…</span>
+    <button id="refresh-btn" aria-label="Refresh now" title="Refresh now">⟳</button>
+  </div>
+  <div id="last-updated"></div>
+</header>
+
+<div id="controls">
+  <input id="search" type="search" placeholder="Search a ride…" autocomplete="off" />
+  <div id="sort-toggle" role="group" aria-label="Sort order">
+    <button data-sort="land" class="active">By area</button>
+    <button data-sort="wait">By wait time</button>
+  </div>
+</div>
+
+<main id="content">
+  <div id="loading">Fetching live wait times…</div>
+  <div id="error" hidden></div>
+  <div id="lands"></div>
+</main>
+
+<footer>
+  Data from <a href="https://queue-times.com" target="_blank" rel="noopener">queue-times.com</a> · auto-refreshes every 60s
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
