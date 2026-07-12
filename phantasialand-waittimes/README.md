@@ -1,17 +1,20 @@
 # Phantasialand Wait Times
 
 A tiny mobile webapp showing live ride wait times for Phantasialand, pulled from
-the public [queue-times.com](https://queue-times.com) API. Pure HTML/CSS/JS, no
-build step, no backend.
+the public [queue-times.com](https://queue-times.com) API. It's a single
+self-contained `index.html` file — HTML, CSS, and JS all inline, no build
+step, no backend, no other files needed.
 
 ## Run it on your phone
 
-Easiest: host it somewhere static and open the URL on your phone.
+Simplest: just open `index.html` directly in your phone's browser (e.g. AirDrop
+it, email it to yourself, or save it from a cloud drive) and tap to open. You
+can also "Add to Home Screen" for an app-like icon.
 
+Other options:
 - **GitHub Pages**: enable Pages for this repo (Settings → Pages → deploy from
-  branch, folder `/phantasialand-waittimes`), then open the resulting URL on
-  your phone and use "Add to Home Screen" for an app-like icon.
-- **Any static host** (Netlify, Vercel, S3, etc.): drop these files in as-is.
+  branch, folder `/phantasialand-waittimes`), then open the resulting URL.
+- **Any static host** (Netlify, Vercel, S3, etc.): drop the file in as-is.
 - **Locally on your own machine, phone on the same Wi-Fi**:
   ```
   cd phantasialand-waittimes
