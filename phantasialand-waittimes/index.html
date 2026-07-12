@@ -299,15 +299,34 @@ footer a { color: var(--accent); }
     throw lastErr;
   }
 
+  // Some mobile browsers and file:// / sandboxed preview contexts deny
+  // access to localStorage entirely, so fall back to an in-memory value.
+  let memoryParkId = null;
+  function readParkId() {
+    try {
+      return localStorage.getItem(PARK_ID_KEY);
+    } catch (e) {
+      return memoryParkId;
+    }
+  }
+  function writeParkId(id) {
+    memoryParkId = id;
+    try {
+      localStorage.setItem(PARK_ID_KEY, id);
+    } catch (e) {
+      // ignore, memory fallback already set
+    }
+  }
+
   async function getParkId() {
-    const cached = localStorage.getItem(PARK_ID_KEY);
+    const cached = readParkId();
     if (cached) return cached;
 
     const groups = await fetchJson(PARKS_URL);
     for (const group of groups) {
       for (const park of group.parks || []) {
         if (park.name.toLowerCase().includes("phantasialand")) {
-          localStorage.setItem(PARK_ID_KEY, String(park.id));
+          writeParkId(String(park.id));
           return String(park.id);
         }
       }
