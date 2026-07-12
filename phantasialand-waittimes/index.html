@@ -924,6 +924,22 @@ footer a { color: var(--accent); }
     els.navBody.appendChild(actions);
   }
 
+  // GeolocationPositionError.code distinguishes real causes that need
+  // different fixes — conflating them (e.g. always suggesting https for
+  // a plain permission denial) points people at the wrong problem.
+  function geoErrorMessage(err) {
+    if (err.code === 1) {
+      return "Location access was denied. Check this site's location permission (tap the icon next to the address bar, or your browser/phone's site settings) and try again.";
+    }
+    if (err.code === 2) {
+      return "Your device couldn't determine a location right now. Make sure location services are turned on and you have a clear view of the sky, then try again.";
+    }
+    if (err.code === 3) {
+      return "Getting your location took too long. Try again.";
+    }
+    return `${err.message || "Unknown location error"}. If this keeps happening, the app may need to be opened over https — see README.`;
+  }
+
   function startNavWatch(loc) {
     stopNavWatch();
     if (!navigator.geolocation) {
@@ -932,7 +948,7 @@ footer a { color: var(--accent); }
     }
     navWatchId = navigator.geolocation.watchPosition(
       (pos) => renderNavLive(loc, { lat: pos.coords.latitude, lon: pos.coords.longitude }),
-      (err) => renderNavError(`Couldn't read your location: ${err.message}`),
+      (err) => renderNavError(geoErrorMessage(err)),
       { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
     );
   }
@@ -948,7 +964,7 @@ footer a { color: var(--accent); }
         writeRideLoc(navRideId, pos.coords.latitude, pos.coords.longitude);
         startNavWatch({ lat: pos.coords.latitude, lon: pos.coords.longitude });
       },
-      (err) => renderNavError(`Couldn't get your location: ${err.message}. This may require the app to be opened over https — see README.`),
+      (err) => renderNavError(geoErrorMessage(err)),
       { enableHighAccuracy: true, timeout: 15000 }
     );
   }
@@ -1232,8 +1248,8 @@ footer a { color: var(--accent); }
         mapCenter = { lat: pos.coords.latitude, lon: pos.coords.longitude };
         onReady();
       },
-      () => {
-        els.mapHint.textContent = "Calibrate at least one ride (📍 button in List view) or allow location access to see the map.";
+      (err) => {
+        els.mapHint.textContent = `${geoErrorMessage(err)} Or calibrate at least one ride (📍 button in List view) to see the map without location access.`;
       },
       { enableHighAccuracy: true, timeout: 15000 }
     );
@@ -1534,7 +1550,7 @@ footer a { color: var(--accent); }
         renderMapFull();
         startMapWatch();
       },
-      (err) => { els.mapHint.textContent = `Couldn't get your location: ${err.message}`; },
+      (err) => { els.mapHint.textContent = geoErrorMessage(err); },
       { enableHighAccuracy: true, timeout: 15000 }
     );
   });
