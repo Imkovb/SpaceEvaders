@@ -17,6 +17,8 @@
   .detail { font-size: 0.8rem; color: #ccc; margin-top: 6px; white-space: pre-wrap; word-break: break-all; max-height: 120px; overflow: auto; }
   button { margin-top: 12px; padding: 10px 16px; font-size: 1rem; }
   #copyBtn { margin-left: 8px; }
+  #copyStatus { font-size: 0.8rem; color: #9cf; margin-left: 8px; }
+  #output { width: 100%; box-sizing: border-box; margin-top: 12px; background: #000; color: #9f9; font-family: monospace; font-size: 0.75rem; padding: 10px; border-radius: 8px; border: 1px solid #333; }
 </style>
 </head>
 <body>
@@ -24,7 +26,12 @@
 <div id="proto"></div>
 <div id="rows"></div>
 <button id="runBtn">Run again</button>
-<button id="copyBtn">Copy results as text</button>
+<button id="copyBtn">Try to copy</button>
+<span id="copyStatus"></span>
+<p style="font-size:0.8rem;color:#999;margin-top:10px;">
+  If the copy button does nothing, just tap inside the box below, select all the text by hand, and copy/screenshot it instead — the full results are always shown there regardless of whether copying works.
+</p>
+<textarea id="output" rows="16" readonly></textarea>
 
 <script>
 const TARGET = "https://queue-times.com/parks.json";
@@ -140,8 +147,26 @@ function runImgPing(url, ms) {
   });
 }
 
+const outputEl = document.getElementById("output");
+
+// Rebuilds the plain-text report from whatever each row currently shows,
+// including rows still "pending" if a run is in progress. Called after
+// every single result lands, not just at the end, so the box always has
+// something useful even if a later method hangs.
+function refreshOutput() {
+  const lines = [`protocol: ${location.protocol}`, `href: ${location.href}`, ""];
+  for (const m of methods) {
+    const row = rowEls[m.name];
+    lines.push(`${m.name}: ${row.querySelector(".status").textContent}`);
+    lines.push(row.querySelector(".detail").textContent);
+    lines.push("");
+  }
+  outputEl.value = lines.join("\n");
+}
+
 async function runAll() {
   buildRows();
+  refreshOutput();
   for (const m of methods) {
     try {
       let detail;
@@ -153,24 +178,26 @@ async function runAll() {
     } catch (err) {
       setResult(m.name, false, err.message);
     }
+    refreshOutput();
   }
 }
 
 document.getElementById("runBtn").addEventListener("click", runAll);
-document.getElementById("copyBtn").addEventListener("click", async () => {
-  const lines = [`protocol: ${location.protocol}`, `href: ${location.href}`, ""];
-  for (const m of methods) {
-    const row = rowEls[m.name];
-    lines.push(`${m.name}: ${row.querySelector(".status").textContent}`);
-    lines.push(row.querySelector(".detail").textContent);
-    lines.push("");
-  }
-  const text = lines.join("\n");
+document.getElementById("copyBtn").addEventListener("click", () => {
+  const statusEl = document.getElementById("copyStatus");
+  outputEl.focus();
+  outputEl.select();
+  outputEl.setSelectionRange(0, outputEl.value.length);
+  let copied = false;
   try {
-    await navigator.clipboard.writeText(text);
-    alert("Copied to clipboard");
+    copied = document.execCommand("copy");
   } catch {
-    prompt("Copy this text:", text);
+    copied = false;
+  }
+  if (copied) {
+    statusEl.textContent = "Copied!";
+  } else {
+    statusEl.textContent = "Couldn't auto-copy — text is selected, use your device's copy action.";
   }
 });
 
