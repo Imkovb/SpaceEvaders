@@ -280,16 +280,29 @@ footer a { color: var(--accent); }
 
   const FETCH_TIMEOUT_MS = 8000;
 
-  async function fetchWithTimeout(url) {
+  async function fetchWithTimeout(url, parseText) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
     try {
       const res = await fetch(url, { cache: "no-store", signal: controller.signal });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (parseText) return parseText(await res.text());
       return await res.json();
     } finally {
       clearTimeout(timer);
     }
+  }
+
+  // r.jina.ai proxies any URL and wraps the body in a reader-mode text
+  // block ("Title: ...\n\nURL Source: ...\n\nMarkdown Content:\n<body>").
+  // Its markdown conversion can also backslash-escape characters that
+  // look like markdown syntax (e.g. "is_open" -> "is\_open"), so strip
+  // the wrapper and undo that escaping before parsing as JSON.
+  function parseJinaResponse(text) {
+    const marker = "Markdown Content:";
+    const idx = text.indexOf(marker);
+    const body = (idx >= 0 ? text.slice(idx + marker.length) : text).trim();
+    return JSON.parse(body.replace(/\\([_*\[\]`])/g, "$1"));
   }
 
   // Loads a URL via a <script> tag and JSONP callback instead of fetch().
@@ -327,27 +340,27 @@ footer a { color: var(--accent); }
     });
   }
 
-  // Fetches JSON directly, falling back to public CORS proxies (via
-  // fetch) and then JSONP-style script-tag proxies if those also fail.
-  // Each attempt gets a short timeout so one hanging/blocked source
-  // doesn't stall the whole chain, and failures are collected so the
-  // final error explains where things actually broke.
+  // Ordered by what diagnostics actually showed working: corsproxy.io
+  // now requires a paid key for non-localhost use (permanent 403), and
+  // thingproxy/jsonp.afeld.me are unreachable outright, so those are
+  // dropped. r.jina.ai answered in under a second and is tried right
+  // after the direct attempt; allorigins/codetabs are kept as later
+  // fallbacks in case a different network reaches them fine.
   async function fetchJson(url) {
     const enc = encodeURIComponent(url);
     const attempts = [
       { label: "direct", type: "fetch", target: url },
-      { label: "corsproxy.io", type: "fetch", target: `https://corsproxy.io/?url=${enc}` },
+      { label: "r.jina.ai", type: "jina", target: `https://r.jina.ai/${url}` },
       { label: "allorigins.win", type: "fetch", target: `https://api.allorigins.win/raw?url=${enc}` },
       { label: "codetabs", type: "fetch", target: `https://api.codetabs.com/v1/proxy?quest=${enc}` },
       { label: "allorigins-jsonp", type: "jsonp", target: `https://api.allorigins.win/get?url=${enc}&callback=__CALLBACK__` },
-      { label: "afeld-jsonp", type: "jsonp", target: `https://jsonp.afeld.me/?url=${enc}&callback=__CALLBACK__` },
     ];
     const failures = [];
     for (const attempt of attempts) {
       try {
-        return attempt.type === "fetch"
-          ? await fetchWithTimeout(attempt.target)
-          : await fetchViaScript(attempt.target, FETCH_TIMEOUT_MS);
+        if (attempt.type === "fetch") return await fetchWithTimeout(attempt.target);
+        if (attempt.type === "jina") return await fetchWithTimeout(attempt.target, parseJinaResponse);
+        return await fetchViaScript(attempt.target, FETCH_TIMEOUT_MS);
       } catch (err) {
         const reason = err.name === "AbortError" ? "timed out" : err.message;
         failures.push(`${attempt.label}: ${reason}`);
