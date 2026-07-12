@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fetch diagnostics</title>
+<style>
+  body { font-family: -apple-system, sans-serif; margin: 0; padding: 16px; background: #111; color: #eee; }
+  h1 { font-size: 1.1rem; }
+  #proto { font-size: 0.85rem; color: #9cf; margin-bottom: 12px; }
+  .row { border: 1px solid #333; border-radius: 8px; padding: 10px; margin-bottom: 8px; }
+  .row .name { font-weight: bold; }
+  .row .status { float: right; padding: 2px 8px; border-radius: 999px; font-size: 0.8rem; }
+  .pending { background: #444; }
+  .ok { background: #1f9d55; }
+  .fail { background: #c23a2b; }
+  .detail { font-size: 0.8rem; color: #ccc; margin-top: 6px; white-space: pre-wrap; word-break: break-all; max-height: 120px; overflow: auto; }
+  button { margin-top: 12px; padding: 10px 16px; font-size: 1rem; }
+  #copyBtn { margin-left: 8px; }
+</style>
+</head>
+<body>
+<h1>Queue-times.com fetch diagnostics</h1>
+<div id="proto"></div>
+<div id="rows"></div>
+<button id="runBtn">Run again</button>
+<button id="copyBtn">Copy results as text</button>
+
+<script>
+const TARGET = "https://queue-times.com/parks.json";
+const enc = encodeURIComponent(TARGET);
+
+const methods = [
+  { name: "direct fetch", type: "fetch", url: TARGET },
+  { name: "fetch no-cors (opaque)", type: "fetch-noCors", url: TARGET },
+  { name: "corsproxy.io", type: "fetch", url: `https://corsproxy.io/?url=${enc}` },
+  { name: "allorigins /raw", type: "fetch", url: `https://api.allorigins.win/raw?url=${enc}` },
+  { name: "allorigins /get (json)", type: "fetch", url: `https://api.allorigins.win/get?url=${enc}` },
+  { name: "codetabs proxy", type: "fetch", url: `https://api.codetabs.com/v1/proxy?quest=${enc}` },
+  { name: "r.jina.ai reader", type: "fetch", url: `https://r.jina.ai/${TARGET}` },
+  { name: "thingproxy", type: "fetch", url: `https://thingproxy.freeboard.io/fetch/${TARGET}` },
+  { name: "allorigins JSONP", type: "jsonp", url: `https://api.allorigins.win/get?url=${enc}&callback=__CALLBACK__` },
+  { name: "img ping (network reachability only)", type: "img", url: "https://queue-times.com/favicon.ico" },
+];
+
+document.getElementById("proto").textContent =
+  `location.protocol = "${location.protocol}"  |  location.href = "${location.href}"`;
+
+const rowsEl = document.getElementById("rows");
+const rowEls = {};
+
+function buildRows() {
+  rowsEl.innerHTML = "";
+  for (const m of methods) {
+    const row = document.createElement("div");
+    row.className = "row";
+    row.innerHTML = `<span class="name">${m.name}</span><span class="status pending">pending</span><div class="detail"></div>`;
+    rowsEl.appendChild(row);
+    rowEls[m.name] = row;
+  }
+}
+
+function setResult(name, ok, detail) {
+  const row = rowEls[name];
+  const statusEl = row.querySelector(".status");
+  statusEl.textContent = ok ? "OK" : "FAIL";
+  statusEl.className = `status ${ok ? "ok" : "fail"}`;
+  row.querySelector(".detail").textContent = detail;
+}
+
+async function withTimeout(promise, ms) {
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new Error("timed out")), ms);
+  });
+  try {
+    return await Promise.race([promise, timeout]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function runFetch(url, noCors) {
+  const start = performance.now();
+  const res = await fetch(url, { cache: "no-store", mode: noCors ? "no-cors" : "cors" });
+  const ms = Math.round(performance.now() - start);
+  if (noCors) {
+    return `opaque response after ${ms}ms (type=${res.type}) — this only proves the network path exists, body is unreadable in no-cors mode`;
+  }
+  const text = await res.text();
+  let parsedNote = "";
+  try {
+    const json = JSON.parse(text);
+    parsedNote = ` — valid JSON, ${JSON.stringify(json).length} chars`;
+  } catch {
+    parsedNote = " — NOT valid JSON (got HTML/error page?)";
+  }
+  return `HTTP ${res.status} after ${ms}ms${parsedNote}\nfirst 200 chars: ${text.slice(0, 200)}`;
+}
+
+function runJsonp(urlTemplate, ms) {
+  return new Promise((resolve, reject) => {
+    const cbName = `__diagCb${Date.now()}${Math.floor(Math.random() * 1e6)}`;
+    const script = document.createElement("script");
+    let settled = false;
+    const start = performance.now();
+    const timer = setTimeout(() => finish(() => reject(new Error("timed out"))), ms);
+    function finish(action) {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      delete window[cbName];
+      script.remove();
+      action();
+    }
+    window[cbName] = (payload) => {
+      const elapsed = Math.round(performance.now() - start);
+      finish(() => resolve(`callback fired after ${elapsed}ms, payload keys: ${Object.keys(payload || {}).join(", ")}`));
+    };
+    script.onerror = () => finish(() => reject(new Error("script tag load error (onerror fired)")));
+    script.src = urlTemplate.replace("__CALLBACK__", cbName);
+    document.head.appendChild(script);
+  });
+}
+
+function runImgPing(url, ms) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const start = performance.now();
+    const timer = setTimeout(() => reject(new Error("timed out")), ms);
+    img.onload = () => {
+      clearTimeout(timer);
+      resolve(`image loaded after ${Math.round(performance.now() - start)}ms — network path to this host is open`);
+    };
+    img.onerror = () => {
+      clearTimeout(timer);
+      reject(new Error("image failed to load — host unreachable or blocked"));
+    };
+    img.src = url + "?t=" + Date.now();
+  });
+}
+
+async function runAll() {
+  buildRows();
+  for (const m of methods) {
+    try {
+      let detail;
+      if (m.type === "fetch") detail = await withTimeout(runFetch(m.url, false), 9000);
+      else if (m.type === "fetch-noCors") detail = await withTimeout(runFetch(m.url, true), 9000);
+      else if (m.type === "jsonp") detail = await withTimeout(runJsonp(m.url, 9000), 9500);
+      else if (m.type === "img") detail = await withTimeout(runImgPing(m.url, 9000), 9500);
+      setResult(m.name, true, detail);
+    } catch (err) {
+      setResult(m.name, false, err.message);
+    }
+  }
+}
+
+document.getElementById("runBtn").addEventListener("click", runAll);
+document.getElementById("copyBtn").addEventListener("click", async () => {
+  const lines = [`protocol: ${location.protocol}`, `href: ${location.href}`, ""];
+  for (const m of methods) {
+    const row = rowEls[m.name];
+    lines.push(`${m.name}: ${row.querySelector(".status").textContent}`);
+    lines.push(row.querySelector(".detail").textContent);
+    lines.push("");
+  }
+  const text = lines.join("\n");
+  try {
+    await navigator.clipboard.writeText(text);
+    alert("Copied to clipboard");
+  } catch {
+    prompt("Copy this text:", text);
+  }
+});
+
+runAll();
+</script>
+</body>
+</html>
