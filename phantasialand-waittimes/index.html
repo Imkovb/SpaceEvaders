@@ -292,23 +292,62 @@ footer a { color: var(--accent); }
     }
   }
 
-  // Fetches JSON directly, falling back to public CORS proxies if the
-  // browser blocks the cross-origin request outright. Each attempt gets a
-  // short timeout so one hanging/blocked proxy doesn't stall the whole
-  // chain, and failures are collected so the final error explains where
-  // things actually broke (straight network failure vs. every proxy also
-  // being unreachable, e.g. blocked by an ad-blocker or firewall).
+  // Loads a URL via a <script> tag and JSONP callback instead of fetch().
+  // Script tags were never covered by the fetch-era CORS/same-origin
+  // model (this is the original pre-CORS JSONP technique), so they still
+  // work in contexts that block fetch/XHR outright — notably pages
+  // opened from file://, where some browsers refuse fetch() to any
+  // remote host regardless of the target's CORS headers.
+  function fetchViaScript(urlTemplate, timeoutMs) {
+    return new Promise((resolve, reject) => {
+      const cbName = `__plJsonp${Date.now()}${Math.floor(Math.random() * 1e6)}`;
+      const script = document.createElement("script");
+      let settled = false;
+      const timer = setTimeout(() => finish(() => reject(new Error("timed out"))), timeoutMs);
+      function finish(action) {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        delete window[cbName];
+        script.remove();
+        action();
+      }
+      window[cbName] = (payload) => {
+        finish(() => {
+          try {
+            resolve(typeof payload?.contents === "string" ? JSON.parse(payload.contents) : payload);
+          } catch (err) {
+            reject(err);
+          }
+        });
+      };
+      script.onerror = () => finish(() => reject(new Error("script load error")));
+      script.src = urlTemplate.replace("__CALLBACK__", cbName);
+      document.head.appendChild(script);
+    });
+  }
+
+  // Fetches JSON directly, falling back to public CORS proxies (via
+  // fetch) and then JSONP-style script-tag proxies if those also fail.
+  // Each attempt gets a short timeout so one hanging/blocked source
+  // doesn't stall the whole chain, and failures are collected so the
+  // final error explains where things actually broke.
   async function fetchJson(url) {
+    const enc = encodeURIComponent(url);
     const attempts = [
-      { label: "direct", target: url },
-      { label: "corsproxy.io", target: `https://corsproxy.io/?url=${encodeURIComponent(url)}` },
-      { label: "allorigins.win", target: `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}` },
-      { label: "codetabs", target: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}` },
+      { label: "direct", type: "fetch", target: url },
+      { label: "corsproxy.io", type: "fetch", target: `https://corsproxy.io/?url=${enc}` },
+      { label: "allorigins.win", type: "fetch", target: `https://api.allorigins.win/raw?url=${enc}` },
+      { label: "codetabs", type: "fetch", target: `https://api.codetabs.com/v1/proxy?quest=${enc}` },
+      { label: "allorigins-jsonp", type: "jsonp", target: `https://api.allorigins.win/get?url=${enc}&callback=__CALLBACK__` },
+      { label: "afeld-jsonp", type: "jsonp", target: `https://jsonp.afeld.me/?url=${enc}&callback=__CALLBACK__` },
     ];
     const failures = [];
     for (const attempt of attempts) {
       try {
-        return await fetchWithTimeout(attempt.target);
+        return attempt.type === "fetch"
+          ? await fetchWithTimeout(attempt.target)
+          : await fetchViaScript(attempt.target, FETCH_TIMEOUT_MS);
       } catch (err) {
         const reason = err.name === "AbortError" ? "timed out" : err.message;
         failures.push(`${attempt.label}: ${reason}`);
@@ -435,30 +474,8 @@ footer a { color: var(--accent); }
     els.summary.textContent = `${openCount} open · ${allRides.length - openCount} closed`;
   }
 
-  // Opening this file directly (file://) makes the browser send
-  // Origin: null on every request, which queue-times.com and the proxy
-  // fallbacks all reject — every fetch then fails identically with a
-  // generic "Failed to fetch". Detect that case up front so the error
-  // is actionable instead of looking like a connectivity problem.
-  function fileOriginWarning() {
-    if (window.location.protocol === "file:") {
-      return "This page was opened as a local file, which browsers block from making network requests. Host it somewhere with http(s):// (e.g. GitHub Pages — see the README) and open it from that URL instead.";
-    }
-    return null;
-  }
-
   async function refresh(userTriggered) {
     if (userTriggered) els.refreshBtn.classList.add("spinning");
-    const originIssue = fileOriginWarning();
-    if (originIssue) {
-      els.loading.hidden = true;
-      els.error.hidden = false;
-      els.error.textContent = originIssue;
-      if (userTriggered) {
-        setTimeout(() => els.refreshBtn.classList.remove("spinning"), 700);
-      }
-      return;
-    }
     try {
       const parkId = await getParkId();
       const raw = await fetchJson(QUEUE_URL(parkId));
@@ -471,7 +488,11 @@ footer a { color: var(--accent); }
       if (!lastData) {
         els.loading.hidden = true;
         els.error.hidden = false;
-        els.error.textContent = `Couldn't load wait times: ${err.message}`;
+        let message = `Couldn't load wait times: ${err.message}`;
+        if (window.location.protocol === "file:") {
+          message += " — this can happen when the page is opened as a local file; try hosting it (see README) if this keeps failing.";
+        }
+        els.error.textContent = message;
       } else {
         els.lastUpdated.textContent = `Last update failed (${new Date().toLocaleTimeString()}), showing cached data`;
       }
