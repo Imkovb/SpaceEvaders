@@ -53,8 +53,13 @@ button that opens native Maps for real walking directions.
 The **Map** tab plots every calibrated ride on an OpenStreetMap tile mosaic
 (plain `<img>` tile requests, no API key), colored/labeled by live wait time,
 with a live "you are here" dot. Tap a marker to open its navigation panel.
-Uncalibrated rides simply don't appear yet — calibrate them from List view
-and they'll show up on the map automatically. Map tiles are © OpenStreetMap
-contributors.
+Uncalibrated rides simply don't appear yet — calibrate them from List view,
+or tap **"Import from OpenStreetMap"** in the Map tab, which queries
+[Overpass](https://overpass-api.de) for attractions tagged inside
+Phantasialand's OSM boundary and matches them to the live ride list by name.
+It only fills in rides that don't already have a location — manual on-site
+calibration always takes precedence and is never overwritten — and OSM's
+per-ride coverage varies, so anything it misses still just needs the normal
+📍 calibration. Map tiles and data are © OpenStreetMap contributors.
 
 No API keys, accounts, or server needed.

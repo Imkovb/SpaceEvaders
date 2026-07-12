@@ -528,6 +528,7 @@ footer a { color: var(--accent); }
 
 <div id="map-view" hidden style="padding: 0 16px 24px;">
   <div id="map-controls">
+    <button id="map-import-osm">🗺️ Import from OpenStreetMap</button>
     <button id="map-recenter">📍 Center on me</button>
     <button id="map-fit">🎢 Center on rides</button>
     <button id="map-zoom-out">−</button>
@@ -593,6 +594,7 @@ footer a { color: var(--accent); }
     mapFit: document.getElementById("map-fit"),
     mapZoomIn: document.getElementById("map-zoom-in"),
     mapZoomOut: document.getElementById("map-zoom-out"),
+    mapImportOsm: document.getElementById("map-import-osm"),
   };
 
   let sortMode = "land";
@@ -731,8 +733,8 @@ footer a { color: var(--accent); }
       return null;
     }
   }
-  function writeRideLoc(rideId, lat, lon) {
-    writeLS(rideLocKey(rideId), JSON.stringify({ lat, lon, savedAt: Date.now() }));
+  function writeRideLoc(rideId, lat, lon, source) {
+    writeLS(rideLocKey(rideId), JSON.stringify({ lat, lon, savedAt: Date.now(), source: source || "manual" }));
   }
   function clearRideLoc(rideId) {
     writeLS(rideLocKey(rideId), "");
@@ -1006,6 +1008,64 @@ footer a { color: var(--accent); }
       }
     }
     return map;
+  }
+
+  // Best-effort import of ride locations already mapped in OpenStreetMap
+  // (a community-maintained map database), matched by name against the
+  // live ride list. This never overwrites a location that's already set
+  // — manual on-site calibration always takes precedence, and OSM's
+  // coverage of individual ride footprints varies park to park, so this
+  // is a head start, not a replacement for calibrating what it misses.
+  const OVERPASS_QUERY =
+    '[out:json][timeout:25];area["name"="Phantasialand"]["leisure"="park"]->.a;' +
+    '(node(area.a)["attraction"];way(area.a)["attraction"];' +
+    'node(area.a)["tourism"="attraction"];way(area.a)["tourism"="attraction"];);' +
+    "out center tags;";
+  const OVERPASS_URL = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(OVERPASS_QUERY)}`;
+
+  function normalizeRideName(s) {
+    return (s || "")
+      .toLowerCase()
+      .replace(/\u00df/g, "ss")
+      .replace(/\u00f6/g, "oe")
+      .replace(/\u00e4/g, "ae")
+      .replace(/\u00fc/g, "ue")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]/g, "");
+  }
+  function namesMatch(a, b) {
+    const na = normalizeRideName(a);
+    const nb = normalizeRideName(b);
+    if (!na || !nb) return false;
+    return na === nb || na.includes(nb) || nb.includes(na);
+  }
+
+  async function seedFromOSM() {
+    els.mapHint.textContent = "Fetching ride locations from OpenStreetMap…";
+    try {
+      const data = await fetchJson(OVERPASS_URL);
+      const elements = (data.elements || []).filter((el) => el.tags && el.tags.name);
+      const allRides = lastData ? lastData.flatMap((l) => l.rides) : [];
+      let seeded = 0;
+      for (const ride of allRides) {
+        if (readRideLoc(String(ride.id))) continue; // never overwrite an existing pin
+        const hit = elements.find((el) => namesMatch(el.tags.name, ride.name));
+        if (!hit) continue;
+        const lat = hit.lat ?? hit.center?.lat;
+        const lon = hit.lon ?? hit.center?.lon;
+        if (typeof lat !== "number" || typeof lon !== "number") continue;
+        writeRideLoc(String(ride.id), lat, lon, "osm");
+        seeded++;
+      }
+      els.mapHint.textContent = seeded
+        ? `Imported ${seeded} ride location${seeded === 1 ? "" : "s"} from OpenStreetMap.`
+        : "No new matches found in OpenStreetMap (rides may already be calibrated, or aren't tagged there).";
+      if (!mapCenter) mapCenter = averageRideLocs();
+      if (mapCenter) renderMapFull();
+    } catch (err) {
+      els.mapHint.textContent = `Couldn't import from OpenStreetMap: ${err.message}`;
+    }
   }
 
   function renderMapTiles() {
@@ -1310,6 +1370,8 @@ footer a { color: var(--accent); }
       els.controls.hidden = false;
     }
   });
+
+  els.mapImportOsm.addEventListener("click", seedFromOSM);
 
   els.mapRecenter.addEventListener("click", () => {
     if (!navigator.geolocation) return;
